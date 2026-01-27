@@ -170,5 +170,106 @@ Output:
 ```bash
 4.0
 ```
+#### Tabel 1: Operator aritmetika dasar Python.
 
+| Simbol | Operasi |
+| :--- | :--- |
+| `+` | Penjumlahan |
+| `-` | Pengurangan |
+| `*` | Perkalian |
+| `/` | Pembagian riil (*float*) |
+| `//` | Pembagian bulat khusus |
+| `%` | Modulus (sisa bagi) |
+| `**` | Pemangkatan |
 
+#### Tabel 2: Urutan prioritas operator aritmetika Python.
+
+| Operator | Tingkat Prioritas |
+| :--- | :--- |
+| `**` | (prioritas tertinggi) |
+| `*`, `/`, `//`, `%` | (pertengahan & setara) |
+| `+`, `-` | (prioritas terendah) |
+
+#### Pembagian
+
+Perhatikan bahwa ekspresi di atas menghasilkan bilangan *floating point* meskipun kita mengoperasikan bilangan bulat. Kejadian tersebut dikarenakan operator pembagian, `/`, selalu mengembalikan `float`, bahkan ketika hasilnya adalah bilangan bulat.
+
+Perlu diketahui bahwa ada operator pembagian khusus integer, `//`, yang mengembalikan hasil bagi bulat dari pembagian ("berapa kali angka kedua cukup dekat ke angka pertama"). Operator yang terkait, yakni `modulus`, `%`, memberikan sisa pembagiannya. Mari kita lihat contoh-contoh berikut ini.
+
+Input:
+```python
+7 / 3
+```
+Output:
+```bash
+2.3333333333333335
+```
+Input:
+```python
+7 // 3
+```
+Output:
+```bash
+2
+```
+Input:
+```python
+7 % 3
+```
+Output:
+```bash
+1
+```
+
+Sebagai catatan tambahan, amati hasil dari `7 / 3`. Nilai tepatnya, $2\frac{1}{3}$, tidak dapat direpresentasikan secara eksak ketika Python memformat bilangan riil (*floating-point numbers*) yang representasinya dalam komputer memiliki presisi terbatas (sekitar 1 dalam $10^{16}$). Nilai `float` terdekat dengan jawaban yang dapat direpresentasikanlah yang dikembalikan.
+
+#### Pustaka Matematika (`math` dan `numpy`)
+
+Selain operator aljabar dasar, terdapat banyak fungsi matematika serta konstanta seperti $\pi$ dan $e$ yang disediakan oleh pustaka `math` dalam Python. Pustaka ini adalah modul bawaan yang disediakan di setiap instalasi Python (tidak perlu menginstal paket tambahan), tetapi harus diimpor dengan perintah: `import math`.
+
+Fungsi-fungsi tersebut (sebagian tercantum dalam Tabel: Fungsi Modul Math) kemudian dapat digunakan dengan menambahkan awalan `math.` Contohnya:
+
+Input:
+```python
+import math
+math.sin(math.pi/4)
+```
+Output:
+```bash
+0.7071067811865475
+```
+
+Cara seperti di atas adalah contoh pemanggilan fungsi. Fungsi `math.sin` diberikan sebuah argumen (di sini, angka $\pi/4$) di dalam tanda kurung. Ekspresi tersebut kemudian mengembalikan hasil perhitungannya.  
+
+Paket **NumPy**, yang awalnya bukan bawaan Python (perlu diinstal secara terpisah), menyediakan semua fungsionalitas `math` dan berbagai tambahan fitur numerik. Oleh karena itu, kita akan lebih sering menggunakannya daripada `math`. Biasanya NumPy diimpor dengan alias `np`, seperti pada contoh berikut:
+
+Input:
+```python
+import numpy as np
+1 / np.sqrt(2)
+```
+Output:
+```bash
+0.7071067811865475
+```
+
+#### Tabel: Beberapa fungsi dan konstanta yang disediakan oleh modul `math`. Sudut diasumsikan dalam radian.
+
+| Fungsi/Konstanta | Deskripsi/Nilai Matematika |
+| :--- | :--- |
+| `math.pi` | $\pi$ |
+| `math.e` | $e$ |
+| `math.sqrt(x)` | $\sqrt{x}$ |
+| `math.exp(x)` | $e^x$ |
+| `math.log(x)` | $\ln x$ |
+| `math.log10(x)` | $\log_{10} x$ |
+| `math.sin(x)` | $\sin(x)$ |
+| `math.cos(x)` | $\cos(x)$ |
+| `math.tan(x)` | $\tan(x)$ |
+| `math.asin(x)` | $\arcsin(x)$ |
+| `math.acos(x)` | $\arccos(x)$ |
+| `math.atan(x)` | $\arctan(x)$ |
+| `math.hypot(x, y)` | jarak Euklides (*Euclidean norm*), $\sqrt{x^2+y^2}$ |
+| `math.comb(n, r)` | Koefisien binomial, $\binom{n}{r} \equiv {}^nC_r$ |
+| `math.degrees(x)` | Konversi $x$ dari radian ke derajat |
+| `math.radians(x)` | Konversi $x$ dari derajat ke radian |
