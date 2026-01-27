@@ -81,3 +81,94 @@ Agar VS Code menggunakan Python yang ada di dalam `.venv` (bukan Python global),
 
 Sekarang lingkungan kerja kita sudah ala profesional, terisolasi, dan siap untuk komputasi berat tanpa mengganggu sistem operasi utama.
 
+## 2. Python sebagai Kalkulator
+
+Di antara kegunaan paling sederhana pemrograman Python adalah sebagai kalkulator canggih. Kita dapat menjumlahkan, mengalikan, mengurangi angka atau bilangan, dan semacamnya. Ada tiga jenis bilangan utama dalam Python:
+
+* **Integer** (bilangan bulat) diwakili oleh tipe `int`.
+* **Bilangan riil** diwakili oleh tipe `float`. Nama `float` merujuk pada *floating-point numbers* (bilangan titik kambang), yaitu representasi perkiraan dari bilangan riil yang digunakan oleh Python (dan sebagian besar bahasa komputer modern lainnya).
+* **Bilangan kompleks** (yang memiliki bagian riil dan imajiner) diwakili oleh tipe `complex`.
+
+Dalam sesi Python interaktif seperti Jupyter Notebook, angka-angka dari tipe bilangan tersebut dapat digabungkan menggunakan operator dalam satu ekspresi yang dievaluasi dan hasilnya dikembalikan ke *prompt* (baris) keluaran. Contohnya:
+
+Input:
+```python
+1 + 2
+```
+Output:
+```bash
+3
+```
+Input:
+```python
+10/4
+```
+Output:
+```bash
+2.5
+```
+Input:
+```python
+2356 * 911
+```
+Output:
+```bash
+2146316
+```
+
+(**Catatan:** Pada mode interaktif, untuk dapat memunculkan "output" yang relevan, bisa dengan klik tombol semacam `▶ Run` yang ada pada editor/lingkungan pemrograman masing-masing atau dengan jalan pintas variasi tombol kibor tertentu, seperti `CTRL`+`Enter` atau `SHIFT`+`Enter`.)
+
+Untuk membuat kode lebih mudah dipahami, ada baiknya kita rutin menambahkan komentar. Bentuk komentar singkat dapat berupa segala sesuatu pada satu baris setelah karakter `#` yang akan diabaikan oleh *interpreter* Python. Komentar ini berguna sebagai catatan yang dapat dibaca kita sendiri atau orang lain sehingga konteks kode akan lebih jelas. Contohnya:
+
+Input:
+```python
+# Entalpi fusi molar es: konversi dari kJ.mol-1 ke J.mol-1.
+6.01 * 1000
+```
+Output:
+```bash
+6010.0
+```
+Input:
+```python
+6.518 / 1013.25 * 760 # tekanan atmosfer di Mars, dalam Torr
+```
+Output:
+```bash
+4.888902047865778
+```
+
+### Operator dan Urutan Operasi
+
+Operator aljabar dasar tercantum dalam Tabel 1.  Dalam penggunaannya, penting bagi kita untuk memperhatikan urutan prioritas operasi (Tabel 2), yakni urutan operator tersebut diterjemahkan dalam sebuah ekspresi.  Contohnya:
+
+Input:
+```python
+1 + 3 * 4
+```
+Output:
+```bash
+13
+```
+
+Di sini, $3*4$ dievaluasi terlebih dahulu karena operator perkalian, `*`, memiliki urutan prioritas yang lebih tinggi daripada `+` dan `*`. Hasilnya, $12$, kemudian ditambahkan pada $1$. Jika operator memiliki urutan prioritas yang sama, bagian-bagian dari ekspresi umumnya dievaluasi dari kiri ke kanan (kecuali pemangkatan atau eksponensial yang dievaluasi dari kanan ke kiri). Urutan prioritas ini dapat dianulir dengan menggunakan tanda kurung biasa:
+
+Input:
+```python
+6 / 3 ** 2      # sama dengan 6 / 9
+```
+Output:
+```bash
+0.6666666666666666
+```
+
+Input:
+```python
+(6 / 3 ) ** 2      # sama dengan 2**2
+```
+Output:
+```bash
+4.0
+```
+
+
