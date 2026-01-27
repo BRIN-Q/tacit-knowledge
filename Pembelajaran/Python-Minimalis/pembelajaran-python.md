@@ -29,6 +29,7 @@ Pastikan dua komponen dasar berikut ini terinstal:
 2.  Buka folder tersebut menggunakan VS Code (*File > Open Folder*).
 3.  Buka Terminal di VS Code (`Ctrl + ` `).
 4.  Ketik perintah berikut untuk membuat `venv`:
+
     ```bash
     python -m venv .venv
     ```
@@ -46,7 +47,9 @@ Sebelum menginstal paket, kita harus "masuk" ke dalam lingkungan virtual.
     .venv\Scripts\Activate.ps1
     ```
 
-> **Masalah Umum di Windows: UnauthorizedAccess** > Jika muncul pesan error merah terkait script execution, jalankan perintah ini di terminal:  
+
+> **Masalah Umum di Windows: UnauthorizedAccess** \
+> Jika muncul pesan error merah terkait script execution, jalankan perintah ini di terminal:  
 > `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`  
 > Lalu coba jalankan perintah aktivasi lagi.
 
@@ -58,3 +61,23 @@ Jalankan perintah berikut:
 ```bash
 pip install numpy scipy matplotlib jupyter
 ```
+### Langkah 5: Menghubungkan VS Code dengan venv
+
+Agar VS Code menggunakan Python yang ada di dalam `.venv` (bukan Python global), kita perlu melakukan konfigurasi yang tepat.
+
+#### **A. Format Jupyter Notebook (`*.ipynb`)**
+
+1. Buka atau buat file baru dengan akhiran `.ipynb` (misal: `catatan.ipynb`).
+2. Klik tombol kernel di pojok kanan atas editor (biasanya tertulis *Select Kernel* atau *Python 3...*).
+3. Pilih **Select Another Kernel...** $\rightarrow$ **Python Environments**.
+4. Cari pilihan yang memiliki label **Star** ($\star$) atau yang mengarah ke folder `.venv` kita.
+   *Contoh:* `Python 3.10.0 ('.venv': venv)`.
+
+#### **B. Format Skrip Python Biasa (`*.py`)**
+
+1. Buka atau buka file berakhiran `.py`.
+2. Klik indikator versi Python di pojok kanan bawah jendela status bar VS Code.
+3. Pilih *interpreter* yang mengarah ke `./.venv/Scripts/python.exe` (untuk Windows) atau `.venv` (untuk Linux/macOS).
+
+Sekarang lingkungan kerja kita sudah ala profesional, terisolasi, dan siap untuk komputasi berat tanpa mengganggu sistem operasi utama.
+
