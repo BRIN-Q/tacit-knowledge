@@ -253,7 +253,7 @@ Output:
 0.7071067811865475
 ```
 
-#### Tabel: Beberapa fungsi dan konstanta yang disediakan oleh modul `math`. Sudut diasumsikan dalam radian.
+#### Tabel 3: Beberapa fungsi dan konstanta yang disediakan oleh modul `math`. Sudut diasumsikan dalam radian.
 
 | Fungsi/Konstanta | Deskripsi/Nilai Matematika |
 | :--- | :--- |
@@ -410,4 +410,86 @@ Output:
 ```bash
 5.0
 ```
+## 4. Variabel
 
+Ketika memecahkan suatu masalah numerik tertentu, kita perlu menyimpan angka-angka dalam program sehingga dapat digunakan berulang kali dan dirujuk dengan nama yang mudah. Untuk mencapai tujuan tersebut, kita perlu mendefinisikan "variabel". Dalam Python, variabel dapat dianggap sebagai label yang disematkan pada objek (misalnya suatu bilangan `int` atau `float`). Ada beberapa aturan penting terkait penamaan variabel:
+
+* Nama variabel boleh mengandung huruf, angka, dan karakter garis bawah (sering digunakan untuk mengindikasikan subskrip).
+* Nama variabel tidak boleh diawali dengan angka.
+* Variabel tidak boleh memiliki nama yang sama dengan salah satu dari kata-kata kunci tercadang (*reserved keywords*) yang dikhususkan dalam bahasa Python, seperti dapat dilihat pada Tabel 1.
+
+Sebagian besar editor kode modern sudah memiliki fitur sorotan sintaksis yang akan memberikan peringatan saat ada kata-kata kunci khusus yang digunakan. Perhatikan perbedaan antara pemberian nilai atau penugasan (*assignment*) yang valid:
+
+Input:
+```python
+# Konstanta Avogadro (mol-1): nilai eksak berdasarkan definisi.
+N_A = 602_214_076_000_000_000_000_000
+```
+
+dan yang invalid:
+
+Input:
+```python
+import = 0
+```
+
+Output:
+```
+  File "/tmp/ipython-input-2269274265.py", line 1
+    import = 0
+           ^
+SyntaxError: invalid syntax
+```
+
+Upaya pemberian nilai ke variabel bernama `import` gagal dilakukan (muncul `SyntaxError`) karena `import` adalah salah satu kata kunci tercadang. Kata kunci ini merupakan bagian dari sintaksis Python yang digunakan untuk mengimpor modul, seperti yang sudah pernah kita lakukan.
+
+Pada praktiknya, kata kunci tercadang jarang menjadi nama variabel yang mungkin dipilih, dengan pengecualian `lambda` (belakangan akan kita lihat), yang bisa dipilih untuk merepresentasikan panjang gelombang (*wavelength*). Namun, kita sarankan menggunakan nama lain seperti `lam` dalam kasus ini. Tabel 4 juga memuat tiga kata kunci khusus yang tidak dapat diubah: `True` dan `False`, yang mewakili konsep logika Boolean, serta `None`, yang digunakan untuk menyatakan nilai kosong atau ketiadaan.
+
+### Tabel 4: Kata kunci tercadang (*reserved keywords*) dalam Python 3.
+
+| | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| `and` | `as` | `assert` | `async` | `await` |
+| `break` | `class` | `continue` | `def` | `del` |
+| `elif` | `else` | `except` | `finally` | `for` |
+| `from` | `global` | `if` | `import` | `in` |
+| `is` | `lambda` | `nonlocal` | `not` | `or` |
+| `pass` | `raise` | `return` | `try` | `while` |
+| `with` | `yield` | `False` | `True` | `None` |
+
+Nama variabel yang dipilih dengan baik dapat membuat kode Python sangat jelas dan ekspresif:
+
+Input:
+```python
+# Konstanta Boltzmann (J.K-1): nilai eksak berdasarkan definisi.
+k_B = 1.380649e-23
+R = N_A * k_B   # konstanta gas (J.K-1.mol-1)
+```
+
+Pada pernyataan terakhir, sisi kanan tanda `=`, yaitu ekspresi $N_A * k_B$, dievaluasi terlebih dahulu dan nama variabel `R` disematkan pada hasil perhitungan ini.
+
+Kita bisa juga memodifikasi nilai yang terkait dengan nama variabel:
+
+Input:
+```python
+n = 1000
+n = n + 1
+```
+Ekspresi $n = n + 1$ tidaklah merepresentasikan persamaan matematika analitik yang valid karena mustahil untuk diselesaikan. Namun, dalam "cara pikir" komputer, pernyataan ini merupakan instruksi untuk mengambil nilai $n$ yang sebelumnya telah ditetapkan, kemudian tambahkan angka satu padanya, dan akhirnya ditetapkan ulang dengan memberi nama $n$ kembali pada hasilnya. Nilai sebelumnya yang sebesar $1.000$ langsung "dilupakan". Memori komputer yang digunakan untuk penyimpanannya dibebaskan dan dapat digunakan untuk keperluan lain. Ekspresi seperti pada contoh sangat umum dalam pemrograman apapun sehingga beberapa bahasa pemrograman, termasuk Python, menyediakan jalan pintas (disebut "penugasan yang diperluas" atau *augmented assignment*):
+
+Input:
+```python
+n = 1000
+n = n += 1
+```
+
+Cara penulisan di atas akan memberikan hasil yang sama dengan sebelumnya. Ada sintaksis serupa untuk operator lain, seperti pengurangan (`-=`) dan perkalian (`*=`).
+
+Jalan pintas lain yang berguna dan difasilitasi Python adalah penggunaan nilai yang dipisahkan koma untuk menetapkan beberapa variabel sekaligus, misalnya:
+
+Input:
+```python
+a, b, c = 42, -1, 0.5
+```
+
+Untuk selanjutnya, kita akan sebaik-baiknya memberikan nama variabel yang bermakna pada objek agar kode lebih bersifat "*self-documenting*" dan kita bisa meminimalkan penggunaan komentar penjelas.
