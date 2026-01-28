@@ -273,3 +273,141 @@ Output:
 | `math.comb(n, r)` | Koefisien binomial, $\binom{n}{r} \equiv {}^nC_r$ |
 | `math.degrees(x)` | Konversi $x$ dari radian ke derajat |
 | `math.radians(x)` | Konversi $x$ dari derajat ke radian |
+
+Meskipun fungsi trigonometri dalam `math` dan NumPy menggunakan radian alih-alih derajat, ada beberapa metode praktis untuk saling konversi antara keduanya:
+
+Input:
+```python
+np.degrees(np.pi/2)
+```
+Output:
+```bash
+90.0
+```
+Input:
+```python
+np.sin(np.radians(30))
+```
+Output:
+```bash
+0.49999999999999994
+```
+Perhatikan kembali presisi yang terbatas pada contoh tersebut. Kita tahu nilai eksak dari $\sin(30^\circ)$ adalah $0.5$, tetapi representasi oleh komputer dapat berupa angka $0.49999999999999994$ seperti pada contoh.
+
+Fungsi `math.log` and `np.log` memberikan logaritma natural (basis $e$). Ada pula varian `math.log10` dan `np.log10` yang terpisah:
+
+Input:
+```python
+np.log(10)
+```
+Output:
+```bash
+2.302585092994046
+```
+Input:
+```python
+1 / np.log10(np.e)
+```
+Output:
+```bash
+2.302585092994046
+```
+
+#### Fungsi Bawaan Lainnya
+
+Ada beberapa fungsi bawaan yang berguna (yaitu, yang tidak memerlukan paket seperti `math` atau NumPy untuk diimpor):
+
+* `abs` mengembalikan nilai absolut dari argumennya.
+* `round` membulatkan angka ke presisi tertentu dalam digit desimal (atau ke bilangan bulat terdekat jika tidak ada presisi yang ditentukan).
+
+## 3. Pendefinisian Bilangan
+
+Berbeda dengan beberapa bahasa pemrograman lain, Python tidak mengharuskan pengguna/pemrogram untuk mendeklarasikan tipe bilangan sebelum digunakan. Angka-angka yang terlihat oleh *interpreter* sebagai bilangan bulat akan diperlakukan sebagai objek `int`, sementara yang tampak seperti bilangan riil akan menjadi objek `float`. Namun, tipe data ini adalah bilangan tanpa dimensi. Jika ada besaran fisis yang diwakili tipe-tipe data tersebut, pemrogram bertanggung jawab untuk menjaga sendiri satuannya.
+
+Bilangan bulat dalam Python bisa sebesar apapun yang diizinkan memori komputer. Untuk mendefinisikan bilangan bulat yang sangat besar, akan sangat mudah memisahkan kelompok digit dengan karakter garis bawah, `_`.
+
+Input:
+```python
+# Konstanta Avogadro (mol-1): nilai eksak berdasarkan definisi.
+602_214_076_000_000_000_000_000
+```
+Output:
+```bash
+602214076000000000000000
+```
+
+Bilangan titik kambang (*floating point*) dapat ditulis dengan titik desimal `.`, dan boleh disertai pengelompokan digit opsional untuk memperjelas:
+
+Input:
+```python
+# Konstanta Gas (J.K-1.mol-1): nilai eksak berdasarkan definisi.
+8.31_446_261_815_324
+```
+Output:
+```bash
+8.31446261815324
+```
+
+Selain itu, dalam notasi ilmiah, kita bisa menggunakan karakter `e` (atau `E`) yang memisahkan mantisa (digit signifikan) dan eksponen:
+
+Input:
+```python
+# Konstanta Boltzmann (J.K-1): nilai eksak berdasarkan definisi.
+1.380649e-23
+```
+Output:
+```bash
+1.380649e-23
+```
+
+Bilangan kompleks dapat ditulis sebagai jumlah dari bagian riil dan imajiner. Bagian imajiner dalam Python ditandai dengan akhiran `j` (bukan `i`) mengikuti konvensi dalam *engineering*:
+
+Input:
+```python
+1 + 4j
+```
+Output:
+```bash
+(1+4j)
+```
+
+Cara lain, kita bisa secara eksplisit memberikan sepasang nilai pada fungsi `complex`:
+
+Input:
+```python
+complex(-2, 3)
+```
+Output:
+```bash
+(-2+3j)
+```
+
+Dalam bilangan kompleks, bagian riil dan imajiner direpresentasikan dalam bentuk titik kambang *floating point* dan dapat diperoleh secara terpisah menggunakan atribut `.real` dan `.imag`. Fungsi bawaan `abs` mengembalikan besaran (magnitudo) bilangan kompleks:
+
+Input:
+```python
+(3 + 4j).real
+```
+Output:
+```bash
+3.0
+```
+
+Input:
+```python
+(3 + 4j).imag
+```
+Output:
+```bash
+4.0
+```
+
+Input:
+```python
+abs(3 + 4j)
+```
+Output:
+```bash
+5.0
+```
+
