@@ -20,7 +20,9 @@ time = pd.read_csv(files[0])["Time (s)"]
 
 avg_df = pd.DataFrame({
     "Time (s)": time,
-    "Voltage (V)": avg_voltage
+    "Voltage (V)": avg_voltage 
+    # Please add STD.DEV
 })
+
 
 avg_df.to_csv("D:/trina/TA_internal/Test_5us Pol-Read_1us dark/tau 200 us/averaged_waveform.csv", index=False)
