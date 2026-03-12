@@ -21,7 +21,7 @@ period = tau + width # affects the trigger signal's config
 # period = 500 (dummy)
 nf.write(f":SOURce1:PULSe:PERiod {period}US") #prev: 500 us
 
-range_time = 2*period*1e-6
+range_time = 2*(period+width)*1e-6
 sig.write(f"TIMebase:RANGe {range_time}") # Oscilloscope config
 sig.write(f"ACQuire:POINts 80000000") # Oscilloscope acq sample
 
@@ -78,5 +78,6 @@ for i in range(num_waveform):
         writer.writerows(zip(time, voltage))
     
     print("Waveform saved to: ", filename)
+
 
 
