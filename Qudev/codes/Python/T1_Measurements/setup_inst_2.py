@@ -10,7 +10,7 @@ sig = rm.open_resource("TCPIP0::192.168.0.10::inst0::INSTR") #Osc (LAN-PC)
 
 # --- FUNCTION GENERATOR ---
 nf.write(":SOURce1:FUNCtion:SHAPe PULSe")
-nf.write(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude 3VPK")
+nf.write(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude 1VPK")
 
 width = float(input("pulse width (us): "))
 # width = 20 (dummy)
@@ -23,16 +23,17 @@ nf.write(f":SOURce1:PULSe:PERiod {period}US") #prev: 500 us
 
 range_time = 2*period*1e-6
 sig.write(f"TIMebase:RANGe {range_time}") # Oscilloscope config
+sig.write(f"ACQuire:POINts 80000000") # Oscilloscope acq sample
+
+# BURST OSCILLATION
+nf.write(":OUTPut1:BURST:STATe ON")
+nf.write(":SOURce1:BURSt:MODE AUTO")
+nf.write(":SOURce1:BURSt:AUTO:NCYCles 2") #Sets the mark wave number of auto burst of CH1 to 2 waves
+nf.write(":SOURce1:BURSt:AUTO:SPACe 1")
+nf.write(":OUTPut1:SYNC:BURSt:TYPE BSYNC")
 
 nf.write(":OUTPut1:STATe ON")
 # (assume it continuously generate the waveform
-
-# BURST OSCILLATION
-# nf.write(":OUTPut1:BURST:STATe ON")
-# nf.write(":SOURce1:BURSt:MODE AUTO")
-# nf.write(":SOURce1:BURSt:AUTO:NCYCles 2") #Sets the mark wave number of auto burst of CH1 to 2 waves
-# nf.write(":SOURce1:BURSt:AUTO:SPACe 1")
-# nf.write(":OUTPut1:SYNC:BURSt:TYPE BSYNC")
 
 time.sleep(0.2)
 
@@ -77,4 +78,5 @@ for i in range(num_waveform):
         writer.writerows(zip(time, voltage))
     
     print("Waveform saved to: ", filename)
+
 
