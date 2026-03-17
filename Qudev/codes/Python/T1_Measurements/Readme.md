@@ -1,5 +1,5 @@
 Codes for T1 measurements
 
-Contributor :
+Contributors :
 Trinadia K, 
 Grace G R
