@@ -36,9 +36,6 @@ nf.write(":OUTPut1:SYNC:BURSt:TYPE BSYNC")
 nf.write(":TRIGger1:BURSt:SOURce TIM")
 nf.write(f":TRIGger1:BURSt:TIMer {timer_trig}US") # period of the sync signal
 
-nf.write(":OUTPut1:STATe ON")
-# (assume it continuously generate the waveform
-
 time.sleep(0.2)
 
 # --- OSCILLOSCOPE ---
@@ -54,6 +51,10 @@ sig.write("TRIG:A:EDGE:SLOPe NEG") # burst-sync signal is low during oscillation
 sig.write("ACQuire:MODE NORM")
 sig.write("FORM ASC") # ASCII format
 sig.write("TIM:REF 50")
+
+# # OUTP ON
+nf.write(":OUTPut1:STATe ON")
+# (assume it continuously generate the waveform
 
 # # Safety check
 # if values_per_interval != 1:
