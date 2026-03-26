@@ -41,7 +41,7 @@ time.sleep(0.2)
 # --- OSCILLOSCOPE ---
 
 # CHANnel1:STATe ON
-range_time = (period+2*width)*1e-6
+range_time = (tau+2*period)*1e-6
 sig.write(f"TIMebase:RANGe {range_time}") # Oscilloscope config
 sig.write(f"ACQuire:POINts 80000000") # Oscilloscope acq sample
 sig.write("CHANnel1:STATe ON") 
