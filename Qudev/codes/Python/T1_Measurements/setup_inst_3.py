@@ -21,9 +21,9 @@ width = float(input("pulse width (us): "))
 nf.write(f":SOURce1:PULSe:WIDTh {width}US")
 
 tau = float(input("tau (us): "))
-period = tau + width # in us, affects the trigger signal's config
-width_trig = 1 # in us
-timer_trig = width_trig + 2*period - width
+period = width + 0.1 # in us, affects the trigger signal's config
+# width_trig = 1 # in us
+timer_trig = tau + width
 # period = 500 (dummy)
 nf.write(f":SOURce1:PULSe:PERiod {period}US") #prev: 500 us
 
