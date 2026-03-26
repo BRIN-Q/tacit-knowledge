@@ -50,7 +50,7 @@ time.sleep(0.2)
 # CHANnel1:STATe ON
 sig.write("CHANnel1:STATe ON") 
 sig.write("TRIGger:A:SOURce EXTernanalog")
-# sig.write("TRIG:A:LEVel5 1") # trig level in V
+sig.write("TRIG:A:LEVel5 0.6") # trig level in V
 sig.write("TRIG:A:EDGE:SLOPe NEG") # burst-sync signal is low during oscillation and high during oscillation stop
 sig.write("ACQuire:MODE NORM")
 sig.write("FORM ASC") # ASCII format
