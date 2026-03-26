@@ -8,10 +8,6 @@ nf = rm.open_resource("GPIB0::2::INSTR") #FG
 # sig = rm.open_resource("USB0::0x0AAD::0x01D6::113416::INSTR") #Osc
 sig = rm.open_resource("TCPIP0::192.168.0.10::inst0::INSTR") #Osc (LAN-PC)
 
-range_time = (period+2*width)*1e-6
-sig.write(f"TIMebase:RANGe {range_time}") # Oscilloscope config
-sig.write(f"ACQuire:POINts 80000000") # Oscilloscope acq sample
-
 # --- FUNCTION GENERATOR ---
 nf.write(":SOURce1:FUNCtion:SHAPe PULSe")
 nf.write(":SOURce1:VOLTage:LEVel:IMMediate:AMPLitude 1VPK")
@@ -48,6 +44,9 @@ time.sleep(0.2)
 # --- OSCILLOSCOPE ---
 
 # CHANnel1:STATe ON
+range_time = (period+2*width)*1e-6
+sig.write(f"TIMebase:RANGe {range_time}") # Oscilloscope config
+sig.write(f"ACQuire:POINts 80000000") # Oscilloscope acq sample
 sig.write("CHANnel1:STATe ON") 
 sig.write("TRIGger:A:SOURce EXTernanalog")
 sig.write("TRIG:A:LEVel5 0.6") # trig level in V
