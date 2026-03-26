@@ -50,7 +50,8 @@ sig.write("TRIG:A:LEVel5 0.6") # trig level in V
 sig.write("TRIG:A:EDGE:SLOPe NEG") # burst-sync signal is low during oscillation and high during oscillation stop
 sig.write("ACQuire:MODE NORM")
 sig.write("FORM ASC") # ASCII format
-sig.write("TIM:REF 50")
+#sig.write("TIM:REF 50")
+sig.write("TIM:REF 8.33")
 
 # # OUTP ON
 nf.write(":OUTPut1:STATe ON")
