@@ -8,3 +8,5 @@ Documentation and manuals for the available instruments used in Qudev experiment
    Standard operating procedure for Neocera Pulsed Laser Deposition system.
 2. **[AFM](./afm.md)**  
    Standard operating procedure for Park Systems Atomic Force Microscope.
+3. **[TeslatronPT Plus](./vti.md)**  
+   Standard operating procedure for Park Systems Atomic Force Microscope.
