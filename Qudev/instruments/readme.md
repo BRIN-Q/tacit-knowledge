@@ -10,5 +10,5 @@ Documentation and manuals for the available instruments used in Qudev experiment
    Standard operating procedure for Park Systems Atomic Force Microscope.
 3. **[Dilase 250](./dilase250.md)**  
    Standard operating procedure for Kloe Dilase 250 direct laser writer.
-4. **[Tesltatron PT Plus](./teslatron.md)**  
+4. **[Tesltatron PT Plus](./teslatronpt.md)**  
    Standard operating procedure for Variable Temperature Insert Teslatron PT Plus.      
