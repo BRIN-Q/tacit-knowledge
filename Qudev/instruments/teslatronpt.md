@@ -9,3 +9,5 @@ Lowering an object’s temperature down to 1 Kelvin (or a mili-Kelvin for that m
 
 ![Cryostat perspective view](../assets/TeslatronPTPlus.png)  
 *Figure 1. 1.6 K Variable Temperature Insert Perspective View*
+
+### loading your sample to a probe head
