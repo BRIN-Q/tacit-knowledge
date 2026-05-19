@@ -13,4 +13,6 @@ Documentation and manuals for the available instruments used in Qudev experiment
 4. **[Tesltatron PT Plus](./teslatronpt.md)**  
    Standard operating procedure for Variable Temperature Insert Teslatron PT Plus.
 5. **[F&S Bondtec Wire Bonder](./wirebonder.md)**  
-   Standard operating procedure for F&S Bondtec Wire Bonder.      
+   Standard operating procedure for F&S Bondtec Wire Bonder.
+6. **[Probe Station & Electromagnet](./wirebonder.md)**  
+   Standard operating procedure for Probe Station and Electromagnet.      
