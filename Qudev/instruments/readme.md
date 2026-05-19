@@ -10,9 +10,11 @@ Documentation and manuals for the available instruments used in Qudev experiment
    Standard operating procedure for Park Systems Atomic Force Microscope.
 3. **[Dilase 250](./dilase250.md)**  
    Standard operating procedure for Kloe Dilase 250 direct laser writer.
-4. **[Tesltatron PT Plus](./teslatronpt.md)**  
+4. **[Vaccoat Thermal Evaporator](./thermalevap.md)**  
+   Standard operating procedure for Vaccoat Thermal Evaporator.
+5. **[Tesltatron PT Plus](./teslatronpt.md)**  
    Standard operating procedure for Variable Temperature Insert Teslatron PT Plus.
-5. **[F&S Bondtec Wire Bonder](./wirebonder.md)**  
+6. **[F&S Bondtec Wire Bonder](./wirebonder.md)**  
    Standard operating procedure for F&S Bondtec Wire Bonder.
-6. **[Probe Station & Electromagnet](./wirebonder.md)**  
+7. **[Probe Station & Electromagnet](./wirebonder.md)**  
    Standard operating procedure for Probe Station and Electromagnet.      
