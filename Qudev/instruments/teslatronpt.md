@@ -5,4 +5,5 @@ Documentation and manuals for the available instruments used in Qudev experiment
 
 ## Variable Temperature Insert Teslatron PT Plus
 
-Under construction
+![Cryostat perspective view](../assets/TeslatronPTPlus.png)  
+*Figure 1. 1.6 K Variable Temperature Insert Perspective View*
