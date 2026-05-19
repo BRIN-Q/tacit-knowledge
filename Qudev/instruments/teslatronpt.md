@@ -16,7 +16,7 @@ down the rabbit's hole!
 
 Let's assume that the system is warm and sitting duct at room temperature for quite sometime, the probe and sample are already inside. Here is the things you neeed to do
 
-1. Clean up the trap fitted inside the circulation line. The trap uses charcoal to trap dirts from entering the circulation line and after sometime the dirts might accumulate inside the trap. Heat up the trap and vacuum out to clean up the dirts for at least two (2) hours.
-2. Perform pump-&-flush routine three (3) times using He gas.
+1. Clean up the trap fitted inside the circulation line. The trap uses charcoal to trap dirts from entering the circulation line and after sometime the dirts might accumulate inside the trap. Heat up the trap and vacuum the dirts out for at least two (2) hours.
+2. Perform pump-&-flush routine three (3) times using He gas. Legend has it that 3 is a good number, a tale told by old buddies when the fridge was all operated manually!
 3. Vacuum the outer vacuum chamber or OVC (labelled as Dewar in the picture, for historical reason) by the Turbo Molecular Pumping (TMP) station.
-4. When the pressure reaches about 0.01 mbar, you can start the cooling procedure. Keep the vacuum on, do not turn the vacuum OFF!
+4. When the pressure reaches about 0.01 mbar, you can start the cooling procedure. Keep the vacuum on, DO NOT turn the vacuum OFF!
