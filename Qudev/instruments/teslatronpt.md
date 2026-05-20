@@ -16,15 +16,15 @@ Prior knowledge of thermodynamics, usually taught in the second year, is very us
 
 Let's assume that the system is warm and sitting duck at room temperature for quite sometime, the probe and sample are already inside. Here is the steps you neeed to follow
 
-1. **Clean up the trap in the circulation line**
+1. **Clean up the trap in the circulation line**.
 The trap uses activated charcoal to capture dirt and contaminants from entering the circulation line. Over time, impurities accumulate inside the trap. Heat the trap gently while vacuum pumping it for at least two (2) hours to remove the contaminants.
-3. **Perform the pump-and-flush routine**
+3. **Perform the pump-and-flush routine**.
 Perform the pump-and-flush cycle three (3) times using helium gas to remove residual air and moisture from the circulation line.
 Legend has it that “three” is the magic number — a tradition inherited from the old cryogenic veterans when refrigerators were operated entirely by hand. Scientifically speaking, though, repeating the process multiple times significantly reduces contamination.
-4. **Evacuate the outer vacuum chamber (OVC)**
+4. **Evacuate the outer vacuum chamber (OVC)**.
 Vacuum the OVC (labelled as Dewar in Figure 1, for historical reasons) using the Turbo Molecular Pumping (TMP) station.
 The goal is to remove air molecules so they can no longer transfer heat efficiently into the cold stages.
-5. **Turn the water chiller on**
+5. **Turn the water chiller on**.
 The chiller is located outside, behind the wall. It is used to cool down the compressed helium gas and the compressor oil. Verify that the water flow rate is approximately 10 L/min before operating the system.
-7. **Start the cooling procedure**
+7. **Start the cooling procedure**.
 When the pressure reaches about 0.01 mbar, you can start the cooling procedure. **Keep the vacuum on, DO NOT turn the vacuum OFF**!
