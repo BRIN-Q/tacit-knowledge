@@ -12,7 +12,7 @@ Documentation and manuals for the available instruments used in Qudev experiment
    Standard operating procedure for Kloe Dilase 250 direct laser writer.
 4. **[Vaccoat Thermal Evaporator](./thermalevap.md)**  
    Standard operating procedure for Vaccoat Thermal Evaporator.
-5. **[Tesltatron PT Plus](./teslatronpt.md)**  
+5. **[Teslatron PT Plus](./teslatronpt.md)**  
    Standard operating procedure for Variable Temperature Insert Teslatron PT Plus.
 6. **[F&S Bondtec Wire Bonder](./wirebonder.md)**  
    Standard operating procedure for F&S Bondtec Wire Bonder.
