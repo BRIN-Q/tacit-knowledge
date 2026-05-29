@@ -10,10 +10,12 @@ Created by: Adha Sukma Aji
 
 ### Gas Hazards
 
-Common Gases Used in This Training
-H2, O2, N2, Ar, CO2, CO, CH4, C2H2, CF4, He
+Common Gases Used in the lab include H2 (hydrogen), O2 (oxygen), N2 (nitrogen), Ar (argon), CO2 (carbon dioxyde), CO (carbon monoxide), CH4 (methane), C2H2 (acetylene), CF4 (carbon tetraflouride), He (helium).
+
 You must know the gas before you use it.
+
 You must know whether the gas is compressed, flammable, oxidizing, toxic, inert, or cryogenic.
+
 Why: The correct emergency response depends on the gas type. The wrong response can make the accident worse.
 
 #### 1.1 Compressed Gases
