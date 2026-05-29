@@ -19,6 +19,7 @@ You must know whether the gas is compressed, flammable, oxidizing, toxic, inert,
 Why: The correct emergency response depends on the gas type. The wrong response can make the accident worse.
 
 #### 1.1 Compressed Gases
+
 Compressed gases include H2, O2, N2, Ar, CH4, and similar gases.
 •	Handle every cylinder as a high-pressure energy source.
 •	Secure every cylinder at the top and bottom.
@@ -30,6 +31,7 @@ Compressed gases include H2, O2, N2, Ar, CH4, and similar gases.
 •	Do not strike cylinders.
 •	Do not heat cylinders.
 •	Do not leave cylinders unsecured.
+
 Why: A compressed gas cylinder is filled at very high pressure, about 150 kg/cm2. If the valve breaks or the cylinder falls, the stored energy can turn the cylinder into a projectile.
 
 #### 1.2 Flammable Gases
@@ -44,6 +46,7 @@ Flammable gases include H2, CH4, C2H2, and similar gases.
 •	Do not create sparks.
 •	Do not use open flames unless the procedure explicitly requires it.
 •	Do not ignore a small leak.
+
 Why: Leaked flammable gas can mix with air and explode when ignited. Hot combustion gas expands rapidly and can cause severe damage.
 
 #### 1.3 Oxidizing Gases
@@ -55,6 +58,7 @@ Oxidizing gases include O2 and similar gases.
 •	Use only compatible materials.
 •	Do not use oxygen as compressed air.
 •	Do not assume a material is safe just because it does not burn in normal air.
+
 Why: Oxygen does not burn by itself, but it makes other materials ignite more easily and burn more violently. Materials that are normally difficult to ignite can burn in oxygen-rich conditions.
 
 #### 1.4 Toxic Gases
@@ -67,6 +71,7 @@ Toxic gases include CO and similar gases.
 •	Keep gas masks available and accessible.
 •	Do not attempt rescue alone.
 •	Do not trust a gas mask unless it matches the hazard.
+
 Why: Some toxic gases can injure or kill at low concentrations. The wrong gas mask may give no protection.
 
 #### 1.5 Inert Gases
@@ -77,8 +82,11 @@ Inert gases include N2, Ar, and similar gases.
 •	Leave immediately if oxygen deficiency is suspected.
 •	Do not enter a low-oxygen area without proper rescue support.
 •	Do not assume inert gas is harmless.
+
 Why: Inert gases are not usually toxic, but they displace oxygen. Oxygen below 15% can cause unconsciousness.
-1.6 Cryogenic Liquids
+
+#### 1.6 Cryogenic Liquids
+
 Liquid nitrogen is the main cryogenic liquid in this training.
 •	Use only proper cryogenic containers.
 •	Use containers with high thermal insulation.
@@ -88,6 +96,7 @@ Liquid nitrogen is the main cryogenic liquid in this training.
 •	Do not use cotton gloves.
 •	Do not ride in an elevator with liquid nitrogen.
 •	Do not seal liquid nitrogen in an unvented container.
+
 Why: Liquid nitrogen is extremely cold and can cause frostbite. It also vaporizes rapidly and expands greatly, which can cause oxygen deficiency or pressure buildup.
 
 ### 2. Cylinder Replacement
@@ -96,6 +105,7 @@ Cylinder replacement is a high-risk task.
 Do not treat it as routine work.
 
 #### 2.1 Before Replacement
+
 •	Ask the designated supervisor or trained responsible person for help.
 •	Inspect the cylinder.
 •	Inspect the regulator.
@@ -106,6 +116,7 @@ Do not treat it as routine work.
 •	Confirm the cylinder is stable.
 •	Prepare Snoop solution for leak checking.
 •	Do not start if any part is damaged.
+
 Why: Most cylinder accidents happen when people assume the setup is normal. Damage, wrong gas, wrong fitting, or poor support can cause leaks, pressure release, fire, or toxic exposure.
 
 #### 2.2 During Replacement
@@ -119,6 +130,7 @@ Why: Most cylinder accidents happen when people assume the setup is normal. Dama
 •	Do not force threads.
 •	Do not use adapters casually.
 •	Do not leave the cylinder unsupported.
+
 Why: Incorrect connection or sudden valve opening can release high-pressure gas. Forced threads and wrong adapters can fail under pressure.
 
 #### 2.3 After Replacement
@@ -131,6 +143,7 @@ Why: Incorrect connection or sudden valve opening can release high-pressure gas.
 •	Fix leaks before use.
 •	Report unresolved leaks.
 •	Do not operate a leaking cylinder.
+
 Why: A small leak can become an explosion, toxic exposure, oxygen deficiency, or fire hazard. Leak checking is not optional.
 
 ### 3. Gas Ordering
@@ -141,6 +154,7 @@ Why: A small leak can become an explosion, toxic exposure, oxygen deficiency, or
 •	Order Ar about 3 to 4 weeks early.
 •	Order CF4 about 3 to 4 weeks early.
 •	Do not wait until the cylinder is empty.
+
 Why: Gas delivery takes time. Running out of gas can interrupt work and may push people into unsafe substitutions or rushed cylinder changes.
 
 ### 4. Gas Leak Emergency Response
@@ -158,6 +172,7 @@ Do not delay evacuation.
 5.	Contact the designated supervisor.
 6.	Contact site emergency or security staff.
 7.	Keep people away from the area.
+
 Why: Your first job is to survive and prevent secondary victims. Valve closing and exhaust operation are useful only when they do not delay evacuation or expose you to danger.
 
 #### 4.2 If the Alarm Sounds in Another Work Area
@@ -170,6 +185,7 @@ Why: Your first job is to survive and prevent secondary victims. Valve closing a
 13.	Activate exhaust for oxygen deficiency when safe.
 14.	Contact the designated supervisor.
 15.	Contact site emergency or security staff.
+
 Why: Another work area may contain an invisible hazard. Entering without the correct gas information and backup can turn one accident into multiple casualties.
 
 #### 4.3 Gas Mask Location
@@ -177,6 +193,7 @@ Why: Another work area may contain an invisible hazard. Entering without the cor
 •	Use the carbon monoxide gas mask from the designated gas mask station.
 •	Confirm mask compatibility before use.
 •	Do not use a mask for an unknown gas unless trained emergency guidance says so.
+
 Why: Gas masks are hazard-specific. A carbon monoxide mask does not automatically protect against every toxic gas or oxygen deficiency.
 
 #### 4.4 Rescue Rule
@@ -186,6 +203,7 @@ Why: Gas masks are hazard-specific. A carbon monoxide mask does not automaticall
 •	Use trained support.
 •	Use the correct protective equipment.
 •	Do not enter an oxygen-deficient area without proper rescue equipment.
+
 Why: Unprotected rescuers often become victims. A failed rescue increases the emergency.
 
 ### 5. Cryogenic Liquids
@@ -201,6 +219,7 @@ Liquid State
 •	Keep cold liquid away from clothing.
 •	Keep cold liquid away from shoes.
 •	Do not touch cold metal with bare skin.
+
 Why: Liquid nitrogen can cause severe frostbite. Severe cases can lead to tissue death.
 Vaporized State
 
@@ -209,6 +228,7 @@ Vaporized State
 •	Avoid enclosed spaces.
 •	Monitor oxygen-deficiency risk.
 •	Do not ride in an elevator with liquid nitrogen.
+
 Why: Liquid nitrogen expands about 800 to 900 times when vaporized. The gas can displace air and cause asphyxiation.
 Material Exposure
 
@@ -216,6 +236,7 @@ Material Exposure
 •	Use copper, aluminum alloys, stainless steel, Teflon, nylon, or PEEK.
 •	Do not use regular steel for cryogenic contact parts.
 •	Inspect parts for cracking or damage.
+
 Why: Many materials become brittle at cryogenic temperature. Brittle parts can break and cause leaks, spills, or pressure release.
 
 #### 5.2 Liquid Nitrogen Handling Rules
@@ -230,6 +251,7 @@ Why: Many materials become brittle at cryogenic temperature. Brittle parts can b
 •	Do not use cotton gloves.
 •	Do not use wet gloves.
 •	Do not rush transfer.
+
 Why: Training prevents basic handling mistakes. Slow cooling and proper PPE reduce frostbite, brittle fracture, and sudden boiling.
 
 #### 5.3 Storage Container Handling
@@ -243,6 +265,7 @@ Why: Training prevents basic handling mistakes. Slow cooling and proper PPE redu
 •	Do not tip the container.
 •	Do not lay the container horizontally.
 •	Keep residual gas in the container.
+
 Why: Glass Dewars can break. Container heads are structurally weak. Heat and tipping increase spill, pressure, and breakage risks.
 
 #### 5.4 Vented and Sealed Containers
@@ -252,6 +275,7 @@ Why: Glass Dewars can break. Container heads are structurally weak. Heat and tip
 •	For sealed containers, close the liquid valve.
 •	For sealed containers, keep the gas release valve open.
 •	Do not trap liquid nitrogen in a sealed volume.
+
 Why: Liquid nitrogen vaporizes continuously. If pressure cannot escape, the container or piping can rupture.
 
 #### 5.5 Transfer from Storage Tank
@@ -262,6 +286,7 @@ Why: Liquid nitrogen vaporizes continuously. If pressure cannot escape, the cont
 •	Increase flow gradually.
 •	Close the valve completely after use.
 •	Confirm the valve is closed before leaving.
+
 Why: Rapid transfer can eject cold gas and liquid. Gradual cooling reduces thermal shock and splashing.
 
 #### 5.6 Oxygen Condensation Risk
@@ -270,6 +295,7 @@ Why: Rapid transfer can eject cold gas and liquid. Gradual cooling reduces therm
 •	Prevent air from entering the container.
 •	Do not allow oxygen-enriched liquid to accumulate.
 •	Treat suspicious liquid as hazardous.
+
 Why: Liquid nitrogen can absorb oxygen from air. Oxygen enrichment raises the boiling point from 77 K to 90 K and increases fire and oxidation hazards.
 
 #### 5.7 Elevator Transport
@@ -279,6 +305,7 @@ Why: Liquid nitrogen can absorb oxygen from air. Oxygen enrichment raises the bo
 •	Place a "No Entry" sign in the elevator.
 •	Use stairs or another elevator yourself.
 •	Retrieve the container immediately at the destination.
+
 Why: If liquid nitrogen spills or vaporizes in the elevator, the closed space can become oxygen-deficient before the doors open.
 
 #### 5.8 First Aid for Cryogenic Accidents
@@ -291,6 +318,7 @@ Frostbite
 •	Do not use hot water.
 •	Cover with gauze.
 •	Seek medical attention immediately.
+
 Why: Hot water can worsen tissue damage. Gradual warming protects injured tissue.
 
 Asphyxiation
@@ -300,6 +328,7 @@ Asphyxiation
 •	Keep the person at rest.
 •	Start artificial respiration if breathing stops.
 •	Contact a doctor immediately.
+
 Why: Oxygen deficiency can cause collapse quickly. Fresh air and emergency care are urgent.
 
 ### 6. Chemical Handling and Hazards
@@ -317,6 +346,7 @@ Organic solvents include acetone, methanol, trichloroethylene, xylene, and simil
 •	Keep solvents away from ignition sources.
 •	Do not heat solvents unattended.
 •	Do not assume ethanol safety applies to other solvents.
+
 Why: Many organic solvents are volatile, flammable, toxic, or narcotic by inhalation. Heating increases vapor generation and fire risk.
 
 #### 6.2 Liquid Chemical Storage
@@ -328,6 +358,7 @@ Why: Many organic solvents are volatile, flammable, toxic, or narcotic by inhala
 •	Close every bottle before storage.
 •	Do not leave acetone, methanol, acids, alkalis, or other liquid chemicals on the working desk.
 •	Do not use the working desk as chemical storage.
+
 Why: Liquid chemicals left on the working desk can spill, react, evaporate, ignite, or contaminate the work area. Drawer storage reduces exposure, tipping, breakage, and accidental mixing.
 
 #### 6.3 Acetone
@@ -340,6 +371,7 @@ Why: Liquid chemicals left on the working desk can spill, react, evaporate, igni
 •	Do not mix acetone with strong acids.
 •	Avoid excessive ultrasonic treatment.
 •	Stop ultrasonic treatment if heating occurs.
+
 Why: Acetone has a flash point of -18 C. It ignites easily. Strong acids may generate explosive peroxides with acetone.
 
 #### 6.4 Isopropanol Alcohol
@@ -353,6 +385,7 @@ Why: Acetone has a flash point of -18 C. It ignites easily. Strong acids may gen
 •	Do not leave isopropanol alcohol on the working desk.
 •	Do not heat isopropanol alcohol unattended.
 •	Do not mix isopropanol alcohol with oxidizers or strong acids.
+
 Why: Isopropanol alcohol evaporates easily and forms flammable vapor. Heat, sparks, oxidizers, or strong acids can create fire or reaction hazards.
 
 #### 6.5 Toluene
@@ -367,6 +400,7 @@ Why: Isopropanol alcohol evaporates easily and forms flammable vapor. Heat, spar
 •	Do not leave toluene on the working desk.
 •	Do not heat toluene unattended.
 •	Do not use toluene near oxidizers.
+
 Why: Toluene vapor is flammable and harmful by inhalation. Exposure can affect the nervous system, and ignition sources can cause fire.
 
 #### 6.6 Strong Acids and Strong Alkalis
@@ -378,6 +412,7 @@ Why: Toluene vapor is flammable and harmful by inhalation. Exposure can affect t
 •	Rinse exposed skin or eyes with running water for at least 15 minutes.
 •	Get medical examination after exposure.
 •	Change contaminated clothing immediately.
+
 Why: Strong acids and alkalis cause chemical burns. Eye exposure can cause permanent injury.
 
 #### 6.7 Hydrofluoric Acid
@@ -391,6 +426,7 @@ Why: Strong acids and alkalis cause chemical burns. Eye exposure can cause perma
 •	Rinse inside the fume hood thoroughly after use.
 •	Do not handle HF alone.
 •	Do not delay treatment after exposure.
+
 Why: HF penetrates below the skin surface and can damage deep tissue. Pain can increase later, so delayed symptoms do not mean the exposure is safe.
 
 #### 6.8 Concentrated Sulfuric Acid
@@ -401,6 +437,7 @@ Why: HF penetrates below the skin surface and can damage deep tissue. Pain can i
 •	Add acid slowly.
 •	Add acid little by little.
 •	Keep your face and body away from the container opening.
+
 Why: Adding water to sulfuric acid can release intense heat and cause violent splashing. Adding acid slowly to water controls heat release.
 
 #### 6.9 Spontaneous Ignition and Dangerous Mixing
@@ -412,6 +449,7 @@ Why: Adding water to sulfuric acid can release intense heat and cause violent sp
 •	Treat H2O2 with strong caution.
 •	Stop work if heating, bubbling, smoke, or gas generation starts.
 •	Do not continue a reaction that behaves unexpectedly.
+
 Why: Oxidizers and reducers can react violently. Strong acid with acetone, alcohols, or metals can generate heat, flammable gas, or ignition.
 
 ### 7. Safety Equipment
@@ -426,6 +464,7 @@ Why: Oxidizers and reducers can react violently. Strong acid with acetone, alcoh
 •	Remove nitrile gloves immediately after solvent contact.
 •	Replace contaminated gloves.
 •	Do not keep contaminated gloves on your hands.
+
 Why: Wrong gloves create false confidence. Some chemicals pass through or damage glove material quickly.
 
 #### 7.2 Chemical Bottles
@@ -439,6 +478,7 @@ Why: Wrong gloves create false confidence. Some chemicals pass through or damage
 •	Keep bottles away from bench edges.
 •	Do not leave bottles in walkways.
 •	Do not carry multiple loose bottles by hand.
+
 Why: Chemical bottles are spill and breakage hazards. Drawer storage and correct carrying prevent tipping, dropping, evaporation, contamination, and accidental exposure.
 
 #### 7.3 Safety Glasses
@@ -447,6 +487,7 @@ Why: Chemical bottles are spill and breakage hazards. Drawer storage and correct
 •	Wear safety glasses over prescription glasses.
 •	Replace damaged safety glasses.
 •	Do not start chemical work without eye protection.
+
 Why: Prescription glasses do not provide full splash protection. Chemical eye injuries can be permanent.
 
 #### 7.4 SDS and MSDS
@@ -458,6 +499,7 @@ Why: Prescription glasses do not provide full splash protection. Chemical eye in
 •	Check spill response.
 •	Check first aid.
 •	Keep the safety information accessible.
+
 Why: The SDS or MSDS tells you the specific hazard and emergency response. Guessing is unacceptable with dangerous chemicals.
 
 ### 8. Chemical Vapor Deposition
@@ -474,6 +516,7 @@ Do not enter the CVD area unless the work requires it.
 •	Take fresh air for at least 15 minutes after leaving.
 •	Do not extend the work time casually.
 •	Do not stay in the CVD area for observation only.
+
 Why: Sulfur and selenium heating can create hazardous vapor or exposure conditions. Time limits reduce inhalation risk and prevent unnecessary exposure.
 
 #### 8.2 High Current Apparatus
@@ -485,6 +528,7 @@ Why: Sulfur and selenium heating can create hazardous vapor or exposure conditio
 •	Do not work barefoot.
 •	Do not use sandals or thin-soled footwear.
 •	Do not touch electrical parts unless the procedure requires it and power safety is confirmed.
+
 Why: High current can cause severe electric shock. Thick soles and dry conditions reduce the path for current through the body.
 
 #### 8.3 Area Entry Control
@@ -494,6 +538,7 @@ Why: High current can cause severe electric shock. Thick soles and dry condition
 •	Do not enter the CVD area if remote checking is enough.
 •	Do not enter during active toxic or high-current operation unless required by procedure.
 •	Keep unnecessary people out of the area.
+
 Why: Remote checking reduces exposure to toxic vapor and electrical hazards. Unnecessary entry creates unnecessary risk.
 
 ### 9. Electrical Measurement
@@ -512,6 +557,7 @@ Do not treat measurement wiring as low-risk equipment.
 •	Do not touch the apparatus with wet hands.
 •	Do not work alone during high-voltage measurement.
 •	Do not rush wiring changes.
+
 Why: Voltage above 200 V can drive dangerous current through the body. Contact can cause electric shock, burns, loss of muscle control, or death.
 
 #### 9.2 Footwear
@@ -520,6 +566,7 @@ Why: Voltage above 200 V can drive dangerous current through the body. Contact c
 •	Keep shoe soles dry.
 •	Do not work barefoot.
 •	Do not wear sandals or thin-soled footwear.
+
 Why: Thick, dry soles reduce the chance that your body becomes the current path to ground.
 
 #### 9.3 Chemical Clearance
@@ -530,6 +577,7 @@ Why: Thick, dry soles reduce the chance that your body becomes the current path 
 •	Keep toluene and other flammable solvents away from the apparatus.
 •	Remove liquid chemical bottles before energizing the setup.
 •	Do not place chemical waste near the apparatus.
+
 Why: Electrical apparatus can produce sparks, arcs, or hot surfaces. Flammable solvent vapor can ignite or explode.
 
 #### 9.4 Exposed Electrical Wire
@@ -543,6 +591,7 @@ Why: Electrical apparatus can produce sparks, arcs, or hot surfaces. Flammable s
 •	Replace damaged wiring before restarting work.
 •	Do not continue measurement with exposed wiring.
 •	Do not touch exposed wire while the apparatus is energized.
+
 Why: Exposed wire can cause electric shock, short circuit, arc flash, fire, or explosion. Tape is only a temporary insulation step after power is removed, not a repair for live wiring.
 
 #### 9.5 Temporary Barrier
@@ -553,6 +602,7 @@ Why: Exposed wire can cause electric shock, short circuit, arc flash, fire, or e
 •	Use the barrier only after the area is isolated.
 •	Do not use acrylic plate as a substitute for de-energizing the apparatus.
 •	Do not restart work until the exposed wire is repaired.
+
 Why: A thick acrylic plate can reduce exposure to fragments, sparks, or accidental contact, but it does not remove electrical energy. The real control is to de-energize and repair the wiring.
 
 #### 9.6 Clothing
@@ -562,6 +612,7 @@ Why: A thick acrylic plate can reduce exposure to fragments, sparks, or accident
 •	Do not wear loose sleeves near apparatus.
 •	Wear clean, stable clothing that does not disintegrate.
 •	Keep loose fabric away from terminals, fans, and moving parts.
+
 Why: Wool and shedding fabric can build static charge, release fibers, and increase the chance of electrical shorting or contamination near energized equipment.
 
 ### 10. Final Pre-Work Checklist
@@ -584,5 +635,7 @@ Do this check before starting dangerous work.
 •	No liquid chemicals are within 2 m of electrical apparatus.
 •	Required thick-soled shoes are worn.
 •	The needed safety equipment is available.
+
 Do not start if any item is unclear.
+
 Why: Most preventable accidents begin before the experiment starts. A short check prevents rushed decisions during danger.General Safety Training
