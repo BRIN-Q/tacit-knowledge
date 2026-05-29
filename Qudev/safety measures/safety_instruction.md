@@ -1,6 +1,10 @@
 # 2026 Safety Training Instructions
 Created by: Adha Sukma Aji
 
+This document serves as preliminary reading material before the safety training session. Please read it carefully beforehand so the actual training can focus on practical procedures rather than explaining why touching random cables is generally a bad idea.
+
+Every now and then, accidents happen. Please follow all instructions carefully, not only to protect yourself and others, but also to protect the instruments from becoming very expensive modern art.
+
 ## Mandatory Safety Guide
 1. This guide restates the safety training content as direct rules.
 2. Follow these rules every time.
