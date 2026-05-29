@@ -9,4 +9,4 @@ For full profile on Quantum Physics Research Center of BRIN (BRIN-Q) visit [quan
 * [`Recipes`](recipes/substrate_cleaning.md) - Miscellaneous know-how and protocols for various experimental procedures.
 * [`Measurement codes`](codes) - Documentation on code and programming used in measurement and process instruments.
 * [`Quantum Optics`](qopt) - Spesific section dedicated for miscellaneous know-how and troubleshooting in Quantum Optics Lab.
-* [`Safety Measures`](safety measures) - Reading materials for all safety precautions and best practices such as handling gases, chemicals, cryogenics, etc.
+* [`Safety`](safety measures) - Reading materials for all safety precautions and best practices such as handling gases, chemicals, cryogenics, etc.
