@@ -28,3 +28,5 @@ The goal is to remove air molecules so they can no longer transfer heat efficien
 The chiller is located outside, behind the wall. It is used to cool down the compressed helium gas and the compressor oil. Verify that the water flow rate is approximately 10 L/min before operating the system.
 7. **Start the cooling procedure**.
 When the pressure reaches about 0.01 mbar, you can start the cooling procedure. **Keep the vacuum on, DO NOT turn the vacuum OFF**!
+8. **STOP evacuating the outer vacuum chamber (OVC)**.
+When the system has been cooled to about 5 K, you can stop evacuating the OVC. Close the OVC valve at the top of the cryostat and **DO NOT forget** to fit in a blank to prevent accidental opening/operation.
