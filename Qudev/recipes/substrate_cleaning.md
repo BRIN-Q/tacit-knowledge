@@ -18,20 +18,21 @@ Miscellaneous know-how and protocols for various experimental procedures
 
 1. **Initial Setup:**
     - Ensure the ultrasonic cleaner is clean and filled with water to the recommended level.
-    - Prepare two clean glass beakers: one with acetone and the other with isopropyl alcohol (IPA).
+    - Prepare three clean glass beakers: one with DI water, one with acetone and the other with isopropyl alcohol (IPA).
 
-2. **Acetone Cleaning:**
+2. **Rinsing:**
+    - Immerse the substrate (e.g., SiO₂/Si) in the beaker containing DI water.
+    - Place the beaker into the ultrasonic cleaner (sonicator).
+    - Sonicate the substrate in acetone for 5 minutes. This step helps remove contaminants and dislodge particles adhered to the surface.
+
+3. **Acetone Cleaning:**
     - Immerse the substrate (e.g., SiO₂/Si) in the beaker containing acetone.
     - Place the beaker into the ultrasonic cleaner (sonicator).
-    - Sonicate the substrate in acetone for 5 minutes. This step helps dissolve organic contaminants and dislodge particles adhered to the surface.
+    - Sonicate the substrate in acetone for 5 minutes. This step helps dissolve organic contaminants.
 
-3. **IPA Cleaning:**
+4. **IPA Cleaning:**
     - After acetone cleaning, quickly transfer the substrate to the beaker containing IPA while simultaneously pouring IPA over the surface of the substrate to prevent residue from forming due to the rapid evaporation of acetone.
     - Sonicate the substrate in IPA for an additional 5 minutes. IPA helps remove any remaining acetone and further cleans the substrate.
-
-4. **Rinsing:**
-    - Carefully remove the substrate from the IPA and rinse it thoroughly with deionized (DI) water to remove any solvent residues.
-    > :warning: If the quality of the DI water is not good, this step could worsen the surface. In such cases, it can be skipped. :warning:
 
 5. **Drying:**
     - Blow-dry the substrate using nitrogen (N₂) gas or a clean air blower to prevent water spots or streaks.
