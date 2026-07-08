@@ -35,7 +35,7 @@ Miscellaneous know-how and protocols for various experimental procedures
 
 5. **Drying:**
     - Blow-dry the substrate using nitrogen (N₂) gas or a clean air blower to prevent water spots or streaks.
-    > :material-test-tube: Try experimenting with the best way to dry the substrate. You can press gently the substrate with tweezers onto clean, lint-free wipes (cleanroom-grade tissue) and then blow it dry. Alternatively, you can hold it in the air and blow it dry. :material-test-tube:
+    > :test_tube: Try experimenting with the best way to dry the substrate. You can press gently the substrate with tweezers onto clean, lint-free wipes (cleanroom-grade tissue) and then blow it dry. Alternatively, you can hold it in the air and blow it dry. :test_tube:
     - Ensure the substrate is completely dry before proceeding.
 
 6. **Final Inspection:**
