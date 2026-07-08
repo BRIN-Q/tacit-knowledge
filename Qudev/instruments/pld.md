@@ -4,7 +4,7 @@ Documentation and manuals for the available instruments used in Qudev experiment
 
 
 ## Pulsed Laser Deposition (Basic)
-:information_source:[1.1.0](../changelog/index.md) 
+:information_source:[1.1.0](../changelog/readme.md) 
 
 Symbol:<br>
 ⚠️ = Warning/Cautious!<br>
