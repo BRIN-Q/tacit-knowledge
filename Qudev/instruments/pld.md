@@ -160,9 +160,9 @@ This documentation covers the basic operation of PLD. For advanced operations su
 
 <p>&nbsp;</p>
 
->Draft by E.D.I
+>Written by Efi.D.I
 >
->Edited by G.G.R
+>Edited by Grace.G.R
 
 
 
