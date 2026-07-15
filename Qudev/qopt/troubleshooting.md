@@ -11,7 +11,7 @@ Symbol:<br>
 
 ### Power Cable Extension
 
-Do not use a long extension cable to power an equipment otherwise you will get spurious signals like the one shown in Fig. 1. The extension cable can act as an antenna and may pick up unwanted signals along the way.
+Do not use a long extension cable to power an equipment otherwise you will get spurious signals like the one shown in Fig. 1. The extension cable can act as an antenna and may pick up unwanted signals along the way. In fact, any metal conductor can act as an antenna, beware of this fact!
 
 ![spurious signal](../assets/spurious_signal.png)<br>
 *Figure 1. ~ 1 MHz spurious signal from a Si Photodetector.*
