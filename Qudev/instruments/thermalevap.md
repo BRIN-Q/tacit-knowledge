@@ -14,6 +14,6 @@ The benchtop thermal evaporator is relatively easy to operate once proper traini
 - Remove the sample holder: Ensure the sample holder is not spinning, then unscrew and remove it.
 - Mount your sample: Gently place and secure your sample on the holder and verify that the QCM lifetime is still sufficient.
 - Install the boat: Install the W-boat on one or two of the deposition bridges depending on your needs (the system has three).
-- Close the chamber: Reinstall the bell jar and close the lid. You may occasionally need to apply a thin layer of grease to the o-ring.
+- Close the chamber: Reinstall the bell jar and close the lid. You may occasionally need to apply a thin layer of grease to the o-ring to improve the vacuum quality.
 - Pump the chamber: Turn on the scroll pump first, followed by the turbo-molecular pump.
 - Wait until the chamber pressure is sufficiently low to start the evaporation.
