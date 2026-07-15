@@ -17,3 +17,8 @@ The benchtop thermal evaporator is relatively easy to operate once proper traini
 - Close the chamber: Reinstall the bell jar and close the lid. You may occasionally need to apply a thin layer of grease to the o-ring to improve the vacuum quality.
 - Pump the chamber: Turn on the scroll pump first, followed by the turbo-molecular pump.
 - Wait until the chamber pressure is sufficiently low to start the evaporation.
+
+### Deposition
+
+- Connect the power supply: Connect the power supply cable to the corresponding deposition boat.
+- Deposition: Slowly increase the current and monitor the boat. The boat will glow when the current is sufficiently large.
