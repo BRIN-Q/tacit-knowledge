@@ -11,6 +11,11 @@ Hardware :
 - Thorlabs APD and Si Photodetector
 - Optical setup
 
+Codes :
+- NV-setup_inst_7.py : measurement/acquisition
+- NV-process_sampling_integrate_no_fitting.py : signal integration w/o T1 fitting
+- NV-analysis_all.ipynb : data analysis (SNR, plot decay curve, T1 distribution. error correlation matrix, error-over-tau)
+
 Contributors :
 Trinadia K, 
 Grace G R
