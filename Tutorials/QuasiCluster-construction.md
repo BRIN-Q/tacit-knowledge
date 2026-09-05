@@ -16,17 +16,6 @@ for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
 done
 ```
 
-Note that as of September 4, 2026 we use the following `munge` and `slurm` settings accidentally:
-```bash
-for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
-    # Create the munge group and user (UID/GID 1111)
-    ssh -t $node 'sudo groupadd -g 1111 munge && sudo useradd -m -d /home/munge -u 1111 -g munge -s /bin/bash munge'
-    
-    # Create the slurm group and user (UID/GID 1121)
-    ssh -t $node 'sudo groupadd -g 1121 slurm && sudo useradd -m -d /home/slurm -u 1121 -g slurm -s /bin/bash slurm'
-done
-```
-
 **Create uniform system users:**
 To prevent package manager conflicts, explicitly create identical `munge` and `slurm` users on all nodes before installing their respective packages.
 
@@ -34,6 +23,19 @@ To prevent package manager conflicts, explicitly create identical `munge` and `s
 for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
     ssh -t $node 'sudo groupadd -g 990 munge && sudo useradd -m -c "MUNGE Uid 'N' Gid Emporium" -d /nonexistent -u 990 -g munge -s /usr/sbin/nologin munge'
     ssh -t $node 'sudo groupadd -g 991 slurm && sudo useradd -m -c "Slurm workload manager" -d /nonexistent -u 991 -g slurm -s /usr/sbin/nologin slurm'
+done
+```
+
+Note that as of September 4, 2026 we use the following `munge` and `slurm` settings accidentally:
+```bash
+for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
+    # Create the munge group and user (UID/GID 1111)
+    ssh -t $node 'echo "munge:x:1111:" | sudo tee -a /etc/group'
+    ssh -t $node 'echo "munge:x:1111:1111:Munge Auth:/nonexistent:/usr/sbin/nologin" | sudo tee -a /etc/passwd '
+    
+    # Create the slurm group and user (UID/GID 1121)
+    ssh -t $node 'echo "slurm:x:1121:" | sudo tee -a /etc/group'
+    ssh -t $node 'echo "slurm:x:1121:1121:Slurm Manager:/nonexistent:/bin/bash" | sudo tee -a /etc/passwd'
 done
 ```
 
@@ -238,7 +240,6 @@ sudo systemctl enable --now slurmctld
 ```bash
 for node in quasi07 quasi08 quasi09 quasi10 quasi11; do
     ssh -t $node 'sudo apt install slurmd slurm-client -y'
-    ssh -t $node 'echo "SLURMD_OPTIONS=\"\"" | sudo tee /etc/default/slurmd'
     ssh -t $node 'sudo ln -sf /clusterfs/config/slurm/slurm.conf /etc/slurm/slurm.conf'
     ssh -t $node 'sudo ln -sf /clusterfs/config/slurm/cgroup.conf /etc/slurm/cgroup.conf'
     ssh -t $node 'sudo systemctl enable --now slurmd'
@@ -275,7 +276,7 @@ sudo mkdir -p /clusterfs/opt/QE
 ```
 We also would like to execute an automated flow for Quantum ESPRESSO maintenance from `/clusterfs/skel/` folder. If the folder does not exist yet, do:
 ```bash
-sudo mkdir -p /clusterfs/skel/
+sudo mkdir -p /clusterfs/skel
 cd /clusterfs/skel/
 ```
 Create the `/clusterfs/skel/update_qe.sh` script below. Note that `QE_VERSION`, `QE_URL`, `TAR_FILE`, `BUILD_DIR`, `SHARED_BIN_DIR`, `LOCAL_BIN_DIR`, and `NODES` can be adjusted depending on the real situation.
@@ -342,11 +343,12 @@ Then, run the script from the folder `/clusterfs/skel/` of `quasi06`.
 ```bash
 bash update_qe.sh
 ```
-On the other hand, if we assume Quantum ESPRESSO is already compiled in `/opt/QE` on `quasi06`, we can simply distribute the binaries to all compute nodes with the following commands.
+On the other hand, if we assume Quantum ESPRESSO is already compiled in `/clusterfs/opt/QE` on `quasi06`, we can simply distribute the binaries to all compute nodes with the following commands.
 ```bash
 for node in quasi07 quasi08 quasi09 quasi10 quasi11; do
     ssh -t $node 'sudo mkdir -p /opt/QE && sudo chown $USER:$USER /opt/QE'
-    rsync -av /opt/QE/ $node:/opt/QE/
+    rsync -av /clusterfs/opt/QE/ $node:/opt/QE/
+    ssh -t $node 'sudo chown -R root:users /opt/QE'
 done
 ```
 
