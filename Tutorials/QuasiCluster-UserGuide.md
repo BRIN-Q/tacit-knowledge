@@ -43,6 +43,7 @@ Host quasicluster
     User username
     IdentityFile C:\Users\Username\.ssh\quasikey
 ```
+
 Again, don't forget to adjust the `User` and `IdentityFile` parts acccording to our real situations.
 
 **Connecting via VS Code:**
@@ -109,11 +110,11 @@ VS Code will automatically start a background Jupyter session on `quasi06` using
 To run Jupyter Notebooks (`.ipynb`) in VS Code using the power of a compute node (`quasi07` to `quasi11`):
 
 1. Open the integrated terminal in VS Code (which is connected to `quasi06`).
-2. Run the `qupy-jupyter` command, specifying how many cores we need (default is 4, maximum is 24):
+2. Run the `qupy-jupyter` command, specifying how many cores we need (default is 4, maximum is 12 physical cores):
+
 ```bash
 qupy-jupyter 8
 ```
-
 
 3. Slurm will automatically allocate the cores on a free compute node (e.g., `quasi08`) and output a URL like:
 `http://quasi08:8341/?token=abcdef123456...`
@@ -165,7 +166,7 @@ The example output is below.
 === Compute Environment Verification ===
 Running on node         : quasi08
 Allocated Slurm CPUs    : 8
-Active Math Threads     : 1
+Active Math Threads     : 8
 
 Generating massive matrices for multiplication...
 Calculating dot product...
@@ -189,6 +190,7 @@ If our internet connection is unstable, or if we intentionally want the Jupyter 
 3. Run the `qupy-jupyter` command inside this `tmux` session.
 4. If VS Code is suddenly closed, the background session on `quasi06` remains active, keeping the Slurm allocation alive.
 5. When we reconnect to VS Code, we can open a new terminal and type `tmux attach` to restore our previous view and cleanly shut down the server with `Ctrl + C` when finished.
+
 ---
 
 ## 4. Submitting Heavy Python Workflows
@@ -197,11 +199,11 @@ For massive calculations or overnight runs, we must submit our Python script to 
 
 ### Single-Node Multithreading (NumPy/SciPy/QuTiP)
 
-Standard scientific libraries rely on C-based OpenBLAS and OpenMP to accelerate matrix math. To utilize multiple cores on a single compute node (up to 24 cores), we map hardware threads to the CPU allocation.
+Standard scientific libraries rely on C-based OpenBLAS and OpenMP to accelerate matrix math. To utilize multiple cores on a single compute node (up to 12 physical cores), we map hardware threads to the CPU allocation.
 
 #### Example Script: `main_simulation.py` and `submit_python.sh`
 
-To test our single-node Slurm submission, we can use the following example scripts. First, open a new file named `main_simulation.py` and edit it. This script creates a large mock Hamiltonian and solves for its eigenvalues. This operation heavily utilizes the multithreading limits we will set in our batch script and should take roughly 1 to 2 minutes to complete on a 16-core allocation.
+To test our single-node Slurm submission, we can use the following example scripts. First, open a new file named `main_simulation.py` and edit it. This script creates a large mock Hamiltonian and solves for its eigenvalues. This operation heavily utilizes the multithreading limits we will set in our batch script and should take roughly 1 to 2 minutes to complete on a 12-core allocation.
 
 ```python
 import numpy as np
@@ -238,7 +240,6 @@ print("\n=== Simulation Complete ===")
 print(f"Ground state (Lowest eigenvalue) : {eigenvalues[0]:.4f}")
 print(f"Highest energy eigenvalue        : {eigenvalues[-1]:.4f}")
 print(f"Total time elapsed               : {end_time - start_time:.2f} seconds.")
-
 ```
 
 Next, create a file named `submit_python.sh`:
@@ -249,7 +250,7 @@ Next, create a file named `submit_python.sh`:
 #SBATCH --partition=qdisk
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=12
 #SBATCH --time=24:00:00
 #SBATCH --output=slurm-%j.out
 
@@ -265,14 +266,17 @@ export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
 python main_simulation.py
 ```
 
-Submit the script using: 
-```
+Submit the script using:
+
+```bash
 sbatch submit_python.sh
 ```
-When we submit the job using something like that, Slurm will run the code in the background. Once the job finishes, we can open the generated `slurm-XXXXXX.out` file to verify that the environment successfully detected our 16 cores and completed the calculation efficiently. The example output is below.
+
+When we submit the job using something like that, Slurm will run the code in the background. Once the job finishes, we can open the generated `slurm-XXXXXX.out` file to verify that the environment successfully detected our 12 cores and completed the calculation efficiently. The example output is below.
+
 ```
 === QuasiCluster: Python Multithreading Test ===
-Allocated Threads (OMP_NUM_THREADS): 16
+Allocated Threads (OMP_NUM_THREADS): 12
 
 Generating a 12000 x 12000 symmetric matrix...
 Starting eigenvalue decomposition (Diagonalization)...
@@ -287,7 +291,7 @@ Total time elapsed               : 132.04 seconds.
 
 ### Multi-Node Parallelization (mpi4py)
 
-If our workflow exceeds 24 cores, we must modify our Python code to use `mpi4py` and distribute the calculation across the network.
+If our workflow exceeds 12 cores, we must modify our Python code to use `mpi4py` and distribute the calculation across the network.
 
 **Example Python Script (`test_mpi.py`):**
 
@@ -311,8 +315,8 @@ Because Slurm handles the network communication natively, we must use `srun` to 
 #SBATCH --job-name=PyMPI_test
 #SBATCH --partition=qdisk
 #SBATCH --nodes=2
-#SBATCH --ntasks=48             # Total cores requested (2 nodes x 24 cores)
-#SBATCH --ntasks-per-node=24    # Pack 24 tasks onto each node
+#SBATCH --ntasks=24             # Total tasks requested (2 nodes x 12 physical cores)
+#SBATCH --ntasks-per-node=12    # Pack 12 tasks onto each node
 #SBATCH --time=01:00:00
 #SBATCH --output=slurm-%j.out
 
