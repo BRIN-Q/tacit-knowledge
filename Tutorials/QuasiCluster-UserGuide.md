@@ -25,7 +25,6 @@ Host quasicluster
     ProxyCommand /usr/bin/cloudflared access ssh --hostname ssh.quasicluster.org
     User username
     IdentityFile /path/to/user/quasikey
-
 ```
 
 **For Windows users:**
@@ -43,7 +42,6 @@ Host quasicluster
     ProxyCommand cloudflared.exe access ssh --hostname ssh.quasicluster.org
     User username
     IdentityFile C:\Users\Username\.ssh\quasikey
-
 ```
 Again, don't forget to adjust the `User` and `IdentityFile` parts acccording to our real situations.
 
@@ -67,7 +65,6 @@ To activate the environment in the terminal, we simply run the shortcut alias:
 
 ```bash
 qupy
-
 ```
 
 Our prompt will update to `(qupy)`, indicating that all scientific modules are loaded.
@@ -88,14 +85,17 @@ Because the shared environment is locked for stability, we cannot run standard `
 ```bash
 qupy
 pip install --user <package_name>
-
 ```
+
+---
+
+Here is the updated Section 3 for our cluster documentation, now incorporating the details on sudden disconnections and how to use persistent terminal sessions.
 
 ---
 
 ## 3. Running Interactive Jupyter Notebooks on Compute Nodes
 
-**CRITICAL:** We must never run heavy calculations interactively on `quasi06`. The login node only has 4 cores and is shared by all of us.
+**IMPORTANT:** We must never run heavy calculations interactively on `quasi06`. The login node only has 4 cores and is shared by all of us.
 
 To run Jupyter Notebooks (`.ipynb`) in VS Code using the power of a compute node (`quasi07` to `quasi11`):
 
@@ -103,7 +103,6 @@ To run Jupyter Notebooks (`.ipynb`) in VS Code using the power of a compute node
 2. Run the `qupy-jupyter` command, specifying how many cores we need (default is 4, maximum is 24):
 ```bash
 qupy-jupyter 8
-
 ```
 
 
@@ -114,8 +113,58 @@ qupy-jupyter 8
 6. Choose **Select Another Kernel...** -> **Existing Jupyter Server**.
 7. Paste the URL.
 
-Our notebook is now directly executing on `quasi08`. When we are finished, we press `Ctrl + C` in the terminal to kill the server and release the Slurm allocation.
+Our notebook is now directly executing on a compute node.
 
+### Verifying the Compute Allocation
+
+To confirm that our notebook is properly utilizing the allocated resources and bypassing the login node, we can paste the following Python code into the first cell of our notebook and execute it:
+
+```python
+import os
+import socket
+import time
+import numpy as np
+
+# 1. Verify the current machine and environmental limits
+hostname = socket.gethostname()
+slurm_cpus = os.environ.get('SLURM_CPUS_PER_TASK', 'Not set')
+omp_threads = os.environ.get('OMP_NUM_THREADS', 'Not set')
+
+print(f"=== Compute Environment Verification ===")
+print(f"Running on node         : {hostname}")
+print(f"Allocated Slurm CPUs    : {slurm_cpus}")
+print(f"Active Math Threads     : {omp_threads}")
+
+# 2. Execute a heavy calculation to utilize the cores
+print("\nGenerating massive matrices for multiplication...")
+start_time = time.time()
+
+# Creating two 10000x10000 matrices requires significant RAM
+matrix_a = np.random.rand(10000, 10000)
+matrix_b = np.random.rand(10000, 10000)
+
+print("Calculating dot product...")
+# NumPy automatically detects the OMP_NUM_THREADS limit and spreads the work
+matrix_c = np.dot(matrix_a, matrix_b)
+
+end_time = time.time()
+print(f"Calculation completed in {end_time - start_time:.2f} seconds.")
+
+```
+
+### Handling Sudden Disconnections and Persistent Sessions
+
+If we close VS Code, our SSH connection to the login node drops. This destroys the integrated terminal session, which instantly kills the `srun` command. Slurm will then terminate the Jupyter server and release the allocated cores back to the cluster. This is an intentional safety feature designed to prevent "zombie" servers from permanently locking up compute nodes if we forget to close our notebooks.
+
+If our internet connection is unstable, or if we intentionally want the Jupyter server to survive closing VS Code, we must use a terminal multiplexer like `tmux`.
+
+**To keep the Jupyter server alive:**
+
+1. Open the integrated terminal in VS Code.
+2. Type `tmux` and press Enter to start a persistent session.
+3. Run the `qupy-jupyter` command inside this `tmux` session.
+4. If VS Code is suddenly closed, the background session on `quasi06` remains active, keeping the Slurm allocation alive.
+5. When we reconnect to VS Code, we can open a new terminal and type `tmux attach` to restore our previous view and cleanly shut down the server with `Ctrl + C` when finished.
 ---
 
 ## 4. Submitting Heavy Python Workflows
@@ -148,7 +197,6 @@ export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # 3. Execute the workflow
 python main_simulation.py
-
 ```
 
 Submit the script using: `sbatch submit_python.sh`
@@ -169,7 +217,6 @@ size = comm.Get_size()
 hostname = socket.gethostname()
 
 print(f"Task {rank}/{size-1} is running on {hostname}")
-
 ```
 
 **Submission Script (`submit_mpi.sh`):**
@@ -195,7 +242,6 @@ export MKL_NUM_THREADS=1
 
 # 3. Launch the Python script across the network via Slurm
 srun python test_mpi.py
-
 ```
 
 Submit the script using: `sbatch submit_mpi.sh`
