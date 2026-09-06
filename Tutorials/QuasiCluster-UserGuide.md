@@ -269,8 +269,21 @@ Submit the script using:
 ```
 sbatch submit_python.sh
 ```
-When we submit the job using something like that, Slurm will run the code in the background. Once the job finishes, we can open the generated `slurm-XXXXXX.out` file to verify that the environment successfully detected our 16 cores and completed the calculation efficiently.
+When we submit the job using something like that, Slurm will run the code in the background. Once the job finishes, we can open the generated `slurm-XXXXXX.out` file to verify that the environment successfully detected our 16 cores and completed the calculation efficiently. The example output is below.
+```
+=== QuasiCluster: Python Multithreading Test ===
+Allocated Threads (OMP_NUM_THREADS): 16
 
+Generating a 12000 x 12000 symmetric matrix...
+Starting eigenvalue decomposition (Diagonalization)...
+This will heavily utilize the allocated OpenBLAS/MKL CPU cores.
+Performing dense matrix multiplication...
+
+=== Simulation Complete ===
+Ground state (Lowest eigenvalue) : -89.2042
+Highest energy eigenvalue        : 12001.0997
+Total time elapsed               : 132.04 seconds.
+```
 
 ### Multi-Node Parallelization (mpi4py)
 
