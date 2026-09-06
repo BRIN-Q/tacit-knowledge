@@ -199,7 +199,49 @@ For massive calculations or overnight runs, we must submit our Python script to 
 
 Standard scientific libraries rely on C-based OpenBLAS and OpenMP to accelerate matrix math. To utilize multiple cores on a single compute node (up to 24 cores), we map hardware threads to the CPU allocation.
 
-Create a file named `submit_python.sh`:
+#### Example Script: `main_simulation.py` and `submit_python.sh`
+
+To test our single-node Slurm submission, we can use the following example scripts. First, open a new file named `main_simulation.py` and edit it. This script creates a large mock Hamiltonian and solves for its eigenvalues. This operation heavily utilizes the multithreading limits we will set in our batch script and should take roughly 1 to 2 minutes to complete on a 16-core allocation.
+
+```python
+import numpy as np
+import time
+import os
+
+print("=== QuasiCluster: Python Multithreading Test ===")
+# Verify that the script respects the threads allocated by Slurm
+threads = os.environ.get('OMP_NUM_THREADS', 'Not Set')
+print(f"Allocated Threads (OMP_NUM_THREADS): {threads}")
+
+# 1. Generate a large symmetric matrix (Mock Hamiltonian)
+matrix_size = 12000
+print(f"\nGenerating a {matrix_size} x {matrix_size} symmetric matrix...")
+start_time = time.time()
+
+# Create a random matrix and add it to its transpose to make it symmetric
+A = np.random.rand(matrix_size, matrix_size)
+H = A + A.T 
+
+# 2. Perform Eigenvalue Decomposition
+print("Starting eigenvalue decomposition (Diagonalization)...")
+print("This will heavily utilize the allocated OpenBLAS/MKL CPU cores.")
+eigenvalues, eigenvectors = np.linalg.eigh(H)
+
+# 3. Perform a heavy Matrix Multiplication
+print("Performing dense matrix multiplication...")
+C = np.dot(H, H)
+
+end_time = time.time()
+
+# 4. Output the results
+print("\n=== Simulation Complete ===")
+print(f"Ground state (Lowest eigenvalue) : {eigenvalues[0]:.4f}")
+print(f"Highest energy eigenvalue        : {eigenvalues[-1]:.4f}")
+print(f"Total time elapsed               : {end_time - start_time:.2f} seconds.")
+
+```
+
+Next, create a file named `submit_python.sh`:
 
 ```bash
 #!/bin/bash
@@ -223,7 +265,12 @@ export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
 python main_simulation.py
 ```
 
-Submit the script using: `sbatch submit_python.sh`
+Submit the script using: 
+```
+sbatch submit_python.sh
+```
+When we submit the job using something like that, Slurm will run the code in the background. Once the job finishes, we can open the generated `slurm-XXXXXX.out` file to verify that the environment successfully detected our 16 cores and completed the calculation efficiently.
+
 
 ### Multi-Node Parallelization (mpi4py)
 
