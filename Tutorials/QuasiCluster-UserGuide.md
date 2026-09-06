@@ -10,8 +10,8 @@ To interact with the cluster and edit scripts, we first need to connect VS Code 
 
 We must ensure the `cloudflared` executable is installed on our local machine. Then, we configure our local SSH settings by editing the SSH config file. The `User username` and `IdentityFile ...` part should be modified accordingly to our real `username` and `/path/to/user/quasikey` (the real location where we put `quasikey` given by the QuasiCluster administrators).
 
-**For Linux and macOS users:**
-Add the following configuration to `~/.ssh/config`:
+**For Linux and macOS users,**
+add the following configuration to `~/.ssh/config`:
 
 ```text
 Host *
@@ -27,8 +27,8 @@ Host quasicluster
     IdentityFile /path/to/user/quasikey
 ```
 
-**For Windows users:**
-Add the following configuration to `C:\Users\Username\.ssh\config`. Ensure `cloudflared.exe` is installed and accessible in the system PATH:
+**For Windows users,**
+add the following configuration to `C:\Users\Username\.ssh\config`. Ensure `cloudflared.exe` is installed and accessible in the system PATH:
 
 ```text
 Host *
@@ -65,7 +65,6 @@ To activate the environment in the terminal, we simply run the shortcut alias:
 
 ```bash
 qupy
-
 ```
 
 Our prompt will update to `(qupy)`, indicating that all scientific modules are loaded.
@@ -86,7 +85,6 @@ Because the shared environment is locked for stability, we cannot run standard `
 ```bash
 qupy
 pip install --user <package_name>
-
 ```
 
 ### D. Light Calculations on Jupyter Notebook
@@ -101,6 +99,7 @@ To access the shared environment for light Jupyter Notebook calculations in VS C
 4. Select **Quasi Python (Shared)** from the available kernels list. If it does not appear, select **Python Environments** and choose the path `/clusterfs/opt/qupy/bin/python`.
 
 VS Code will automatically start a background Jupyter session on `quasi06` using our shared environment. We can then execute our code cells normally.
+
 ---
 
 ## 3. Running Interactive Jupyter Notebooks on Compute Nodes
