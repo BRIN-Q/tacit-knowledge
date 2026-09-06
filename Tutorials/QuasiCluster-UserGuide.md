@@ -65,6 +65,7 @@ To activate the environment in the terminal, we simply run the shortcut alias:
 
 ```bash
 qupy
+
 ```
 
 Our prompt will update to `(qupy)`, indicating that all scientific modules are loaded.
@@ -85,12 +86,21 @@ Because the shared environment is locked for stability, we cannot run standard `
 ```bash
 qupy
 pip install --user <package_name>
+
 ```
 
----
+### D. Light Calculations on Jupyter Notebook
 
-Here is the updated Section 3 for our cluster documentation, now incorporating the details on sudden disconnections and how to use persistent terminal sessions.
+While heavy calculations must run on compute nodes, we are allowed to perform short, light interactive data analysis directly on the login node (`quasi06`). We must keep resource usage minimal to avoid slowing down the system for other users.
 
+To access the shared environment for light Jupyter Notebook calculations in VS Code:
+
+1. Open a `.ipynb` file in VS Code.
+2. Click the **Select Kernel** button located in the top right corner.
+3. Choose **Jupyter Kernel**.
+4. Select **Quasi Python (Shared)** from the available kernels list. If it does not appear, select **Python Environments** and choose the path `/clusterfs/opt/qupy/bin/python`.
+
+VS Code will automatically start a background Jupyter session on `quasi06` using our shared environment. We can then execute our code cells normally.
 ---
 
 ## 3. Running Interactive Jupyter Notebooks on Compute Nodes
@@ -149,8 +159,23 @@ matrix_c = np.dot(matrix_a, matrix_b)
 
 end_time = time.time()
 print(f"Calculation completed in {end_time - start_time:.2f} seconds.")
-
 ```
+
+The example output is below.
+```
+=== Compute Environment Verification ===
+Running on node         : quasi08
+Allocated Slurm CPUs    : 8
+Active Math Threads     : 1
+
+Generating massive matrices for multiplication...
+Calculating dot product...
+Calculation completed in 9.99 seconds.
+```
+
+#### Stopping the Jupyter Compute Allocation
+
+To stop the Jupyter kernel related to the previous compute node allocation, we can press `CTRL + c` on the VS Code's terminal. We can go back to use the default `qupy` environment for light Python calculations on `quasi06`.
 
 ### Handling Sudden Disconnections and Persistent Sessions
 
