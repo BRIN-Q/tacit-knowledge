@@ -8,7 +8,7 @@ This guide explains how we can connect Visual Studio Code (VS Code) to the clust
 
 To interact with the cluster and edit scripts, we first need to connect VS Code to our login node (`quasi06`). Because our cluster is accessible globally, we use a Cloudflare tunnel to securely route the SSH connection to `ssh.quasicluster.org`.
 
-We must ensure the `cloudflared` executable is installed on our local machine. Then, we configure our local SSH settings by editing the SSH config file.
+We must ensure the `cloudflared` executable is installed on our local machine. Then, we configure our local SSH settings by editing the SSH config file. The `User username` and `IdentityFile ...` part should be modified accordingly to our real `username` and `/path/to/user/quasikey` (the real location where we put `quasikey` given by the QuasiCluster administrators).
 
 **For Linux and macOS users:**
 Add the following configuration to `~/.ssh/config`:
@@ -45,6 +45,7 @@ Host quasicluster
     IdentityFile C:\Users\Username\.ssh\quasikey
 
 ```
+Again, don't forget to adjust the `User` and `IdentityFile` parts acccording to our real situations.
 
 **Connecting via VS Code:**
 
@@ -52,7 +53,7 @@ Host quasicluster
 2. Ensure the **Remote - SSH** and **Jupyter** extensions are installed.
 3. Open the Command Palette (`Ctrl + Shift + P` or `Cmd + Shift + P`) and select **Remote-SSH: Connect to Host...**
 4. Select `quasicluster` from the list.
-5. Open the working folder (e.g., `/clusterfs/username/my_project`) via the File Explorer.
+5. Open the working folder (e.g., something like `/clusterfs/username/my_project`) via the File Explorer.
 
 ---
 
