@@ -127,6 +127,7 @@ ProctrackType=proctrack/cgroup
 TaskPlugin=task/affinity,task/cgroup
 SelectType=select/cons_tres
 SelectTypeParameters=CR_Core_Memory,CR_ONE_TASK_PER_CORE
+DefMemPerCPU=5200
 
 # Scheduling
 SchedulerType=sched/backfill
@@ -196,14 +197,36 @@ Create the dynamic scripts to manage the scratch directory and environment varia
 
 mkdir -p /scratch/slurm-$SLURM_JOB_ID
 chown $SLURM_JOB_USER: /scratch/slurm-$SLURM_JOB_ID
+
+# Safely retrieve the submission directory and save it locally for the epilog
+WORKDIR=$(scontrol show job $SLURM_JOB_ID | grep WorkDir | awk -F '=' '{print $2}' | awk '{print $1}')
+if [ -n "$WORKDIR" ]; then
+    echo "$WORKDIR" > /scratch/slurm-$SLURM_JOB_ID/.workdir_path
+fi
 ```
 
 `/clusterfs/config/slurm/epilog.sh`:
 
 ```bash
 #!/bin/bash
-# Cleans the local directory after the job completely finishes.
 
+# 1. Read the saved submission directory
+WORKDIR_FILE="/scratch/slurm-$SLURM_JOB_ID/.workdir_path"
+
+if [ -f "$WORKDIR_FILE" ]; then
+    WORKDIR=$(cat "$WORKDIR_FILE")
+    
+    # 2. If the directory exists, transfer the data back as the user
+    if [ -n "$WORKDIR" ] && [ -d "$WORKDIR" ]; then
+        # Creates a unique folder in your submission directory to prevent overwriting
+        DEST_DIR="$WORKDIR/out-$SLURM_JOB_ID"
+        
+        # Execute rsync as the job owner, excluding the hidden tracking file
+        sudo -u $SLURM_JOB_USER bash -c "mkdir -p \"$DEST_DIR\" && rsync -a --exclude='.workdir_path' /scratch/slurm-$SLURM_JOB_ID/ \"$DEST_DIR/\""
+    fi
+fi
+
+# 3. Clean up the compute node's local disk
 rm -rf /scratch/slurm-$SLURM_JOB_ID
 ```
 
@@ -214,7 +237,12 @@ rm -rf /scratch/slurm-$SLURM_JOB_ID
 # Injects the environment variable into the user's batch script.
 
 echo "export OMP_NUM_THREADS=1"
-echo "export ESPRESSO_TMPDIR=/scratch/slurm-$SLURM_JOB_ID"
+
+# Generic scratch variables for all cluster applications
+echo "export SLURM_TMPDIR=/scratch/slurm-$SLURM_JOB_ID/"
+echo "export LOCAL_SCRATCH=/scratch/slurm-$SLURM_JOB_ID/"
+# Specific variable for native Quantum ESPRESSO routing
+echo "export ESPRESSO_TMPDIR=/scratch/slurm-$SLURM_JOB_ID/"
 ```
 
 Apply executable permissions:
