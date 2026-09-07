@@ -391,7 +391,6 @@ ATOMIC_POSITIONS (alat)
 
 K_POINTS (automatic)
   6 6 6 1 1 1
-
 ```
 
 **File 2: `nscfbands.in`**
@@ -427,7 +426,6 @@ K_POINTS (crystal_b)
   0.500  0.000  0.500  20 
   0.625  0.250  0.625  20 
   1.000  1.000  1.000  0
-
 ```
 
 **File 3: `bands.in`**
@@ -437,7 +435,6 @@ K_POINTS (crystal_b)
   prefix  = 'si'
   filband = 'si.bands'
 /
-
 ```
 
 **File 4: `nscf.in`**
@@ -469,7 +466,6 @@ ATOMIC_POSITIONS (alat)
 
 K_POINTS (automatic)
   18 18 18 1 1 1
-
 ```
 
 **File 5: `dos.in`**
@@ -482,7 +478,6 @@ K_POINTS (automatic)
   Emax    = 15.0
   DeltaE  = 0.05
 /
-
 ```
 
 ---
@@ -523,7 +518,6 @@ echo "Processing DOS..."
 mpirun -np $SLURM_NTASKS dos.x -in dos.in > dos.out
 
 echo "Quantum ESPRESSO workflow finished."
-
 ```
 
 ### Understanding the Resource Allocation
@@ -547,7 +541,6 @@ To submit the job, we run:
 
 ```bash
 sbatch run.sh
-
 ```
 
 ---
@@ -678,7 +671,6 @@ axBand.text(-0.22, 0.98, '(a)', transform=axBand.transAxes)
 axDOS.text(-0.4, 0.98, '(b)', transform=axDOS.transAxes)
 
 plt.savefig('plot-bands-dos.pdf', bbox_inches='tight')
-
 ```
 
-Executing this code blocks aligns the extracted Fermi level automatically and applies our standard aesthetic using `plt.style.use('/clusterfs/repo/plot.mplstyle')`. It creates a highly readable, publication-ready PDF file containing both the band structure and the density of states.
+Executing this code blocks aligns the extracted Fermi level automatically and applies our standard aesthetic using `plt.style.use('/clusterfs/repo/plot.mplstyle')`. It creates a high-quality PDF file containing both the band structure and the density of states.
