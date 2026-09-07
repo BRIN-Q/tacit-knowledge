@@ -1,6 +1,42 @@
+# Welcome to QuasiCluster!
+
+## Contents
+1. [Brief Introduction](#brief-introduction)
+2. [Python and VS Code Integration](#python-and-vs-code-integration)
+3. [Quantum ESPRESSO Basic Workflow](#quantum-espresso-basic-workflow)
+
+---
+
+# Brief Introduction
+
+QuasiCluster is our "in-house" mini high-performance computing (HPC) environment running on Debian Linux. This cluster is designed to accelerate computational physics simulations, quantum modeling, and medium-level data analysis, which are too heavy for personal computers but still do not yet need "real" BRIN HPC system. Our architecture is divided into two primary components to ensure stability and efficiency. The main access point is the login node, `quasi06`, which is equipped with 4 CPU cores. We use this node strictly for managing files, compiling code, preparing input scripts, and submitting jobs. The actual heavy computing is handled by our five compute nodes, designated `quasi07` through `quasi11`. Each compute node is powered by 12 physical (double-threaded) cores and is securely managed by the Slurm workload manager to guarantee peak performance and prevent resource collisions among our users.
+
+All nodes are interconnected through a shared storage system located at `/clusterfs`. This infrastructure ensures that our project files, optimized Python environments, and shared data repositories (such as Quantum ESPRESSO pseudopotentials) are universally accessible regardless of which node executes our jobs. Slurm dynamically tracks memory usage and core allocations across the network, allowing multiple users to safely share the compute nodes without interfering with each other's calculations.
+
+### Accessing the Cluster
+
+To access QuasiCluster from within the BRIN-Q internal network, we use a standard Secure Shell (SSH) connection targeting the login node's internal IP address. We simply open a terminal on our local machine and execute the following command, making sure to provide the correct path to our security key and our assigned username:
+
+```bash
+ssh -i /path/to/quasikey username@10.10.216.30
+```
+
+*(Note: If we are working remotely outside the BRIN-Q network, we must use the Cloudflare SSH configuration detailed in the VS Code integration section of this guide.)*
+
+### Essential Commands
+
+Once connected to `quasi06`, there are several important commands and tools we must know to navigate the system and utilize the resources effectively:
+
+* **`clust`**: This is our custom monitoring command. Typing `clust` in the terminal provides a real-time summary of the cluster status. It displays the disk usage of our shared `/clusterfs` storage and the current CPU loads across all login and compute nodes.
+* **`qupy`**: Running this command activates our shared, optimized Python environment. It immediately loads essential scientific libraries like NumPy, SciPy, QuTiP, and Qiskit so we can test and run Python scripts.
+* **`qupy-jupyter [cores]`**: This command launches an interactive Jupyter Notebook server directly on an available compute node. It safely requests the specified number of physical cores from Slurm (up to 12 cores), keeping the heavy calculation load off the login node.
+* **`sbatch [script.sh]`**: We use this standard Slurm command to submit heavy, long-running calculations to the compute nodes as background batch jobs. This is the primary method for running Quantum ESPRESSO and multi-node MPI programs.
+* **`squeue`**: This command displays the current status of the Slurm queue. It allows us to see which jobs are actively running, which jobs are pending in the queue, and the specific nodes allocated to our calculations.
+* **`scancel [job_id]`**: If we need to stop a calculation early or if we submitted a job by mistake, we use this command followed by the specific job ID to safely terminate the process and release the cores back to the cluster.
+
 # Python and VS Code Integration
 
-Welcome to the QuasiCluster Python environment. This cluster provides a fully shared, pre-configured Python environment containing the essential scientific libraries (NumPy, SciPy, QuTiP, mpi4py, Qiskit, etc.) optimized for our hardware.
+QuasiCluster provides a fully shared, pre-configured Python environment containing essential scientific libraries (NumPy, SciPy, QuTiP, mpi4py, Qiskit, etc.) optimized for our hardware.
 
 This guide explains how we can connect Visual Studio Code (VS Code) to the cluster, utilize the shared Python environment, and submit heavy parallelized tasks across our compute nodes.
 
@@ -338,7 +374,7 @@ Submit the script using: `sbatch submit_mpi.sh`
 
 # Quantum ESPRESSO Basic Workflow
 
-In this tutorial, we will learn how to perform a complete electronic structure calculation for a silicon crystal using Quantum ESPRESSO on our cluster. We will calculate the self-consistent field (SCF), the electronic band structure, and the density of states (DOS), and finally plot the results using a Jupyter Notebook.
+In this section, we will learn how to perform a complete electronic structure calculation for a silicon crystal using Quantum ESPRESSO on our cluster. We will calculate the self-consistent field (SCF), the electronic band structure, and the density of states (DOS), and finally plot the results using a Jupyter Notebook.
 
 ## 1. Creating the Input Files
 
