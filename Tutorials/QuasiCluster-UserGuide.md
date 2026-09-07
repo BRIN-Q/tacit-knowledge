@@ -333,3 +333,352 @@ srun python test_mpi.py
 ```
 
 Submit the script using: `sbatch submit_mpi.sh`
+
+---
+
+# Quantum ESPRESSO Basic Workflow
+
+In this tutorial, we will learn how to perform a complete electronic structure calculation for a silicon crystal using Quantum ESPRESSO on our cluster. We will calculate the self-consistent field (SCF), the electronic band structure, and the density of states (DOS), and finally plot the results using a Jupyter Notebook.
+
+## 1. Creating the Input Files
+
+To begin, we need to create five specific Quantum ESPRESSO input files in our project folder. Using our VS Code connection to the cluster, we can open the File Explorer, create a new folder (for example, `silicon_bands`), and create the following files inside it. 
+
+### The Role of Each Input File
+
+1. **`scf.in` (Self-Consistent Field):** This is the foundational calculation. It solves the Kohn-Sham equations iteratively to find the ground-state electron charge density of the silicon crystal. 
+2. **`nscfbands.in` (Non-SCF for Bands):** This calculation reads the converged charge density from the SCF step and calculates the eigenvalues (energy levels) along a specific path of high-symmetry points in the Brillouin zone.
+3. **`bands.in` (Bands Post-processing):** This lightweight script extracts the raw eigenvalue data from the previous step and reformats it into a readable structure (`si.bands.gnu`) for plotting.
+4. **`nscf.in` (Non-SCF for DOS):** Unlike the bands calculation which follows a linear path, this step calculates the eigenvalues over a dense, uniform 3D grid of k-points. This volumetric data is necessary to determine the Density of States.
+5. **`dos.in` (DOS Post-processing):** This script processes the uniform grid data to calculate how many electronic states exist at each energy level, outputting the `si.dos` file.
+
+### Important Configuration Notes
+
+In the `&CONTROL` section of all our input files, there are two important settings to observe:
+
+* **Shared Pseudopotentials:** We use `pseudo_dir = '/clusterfs/repo/pseudo/'`. Instead of downloading pseudopotentials for every project, we rely on this shared repository maintained on our cluster. It saves space and ensures we all use consistent, high-quality atomic data.
+* **Omitting `outdir`:** We deliberately omit the standard `outdir` parameter. By omitting it, Quantum ESPRESSO defaults to generating the temporary `.save` folder and the `.xml` output data directly inside our current submission directory (usually as `./si.save`). This keeps our project folder self-contained and prevents users from accidentally overwriting each other's files in the `/tmp` directory. 
+
+### The Input File Contents
+
+Please copy and paste the following text into their respective files.
+
+**File 1: `scf.in`**
+```fortran
+&CONTROL
+  calculation  = 'scf'
+  restart_mode = 'from_scratch'
+  prefix       = 'si'
+  pseudo_dir   = '/clusterfs/repo/pseudo/'
+/
+&SYSTEM
+  ibrav       = 2
+  celldm(1)   = 10.20
+  nat         = 2
+  ntyp        = 1
+  ecutwfc     = 30.0
+/
+&ELECTRONS
+  conv_thr    = 1.0e-8
+  mixing_beta = 0.7
+/
+ATOMIC_SPECIES
+  Si  28.0855  Si_ONCV_PBE-1.2.upf
+
+ATOMIC_POSITIONS (alat)
+  Si 0.00 0.00 0.00
+  Si 0.25 0.25 0.25
+
+K_POINTS (automatic)
+  6 6 6 1 1 1
+
+```
+
+**File 2: `nscfbands.in`**
+
+```fortran
+&CONTROL
+  calculation  = 'bands'
+  prefix       = 'si'
+  pseudo_dir   = '/clusterfs/repo/pseudo/'
+/
+&SYSTEM
+  ibrav       = 2
+  celldm(1)   = 10.20
+  nat         = 2
+  ntyp        = 1
+  ecutwfc     = 30.0
+  nbnd        = 12
+/
+&ELECTRONS
+  conv_thr    = 1.0e-8
+/
+ATOMIC_SPECIES
+  Si  28.0855  Si_ONCV_PBE-1.2.upf
+
+ATOMIC_POSITIONS (alat)
+  Si 0.00 0.00 0.00
+  Si 0.25 0.25 0.25
+
+K_POINTS (crystal_b)
+  5
+  0.500  0.500  0.500  20 
+  0.000  0.000  0.000  20 
+  0.500  0.000  0.500  20 
+  0.625  0.250  0.625  20 
+  1.000  1.000  1.000  0
+
+```
+
+**File 3: `bands.in`**
+
+```fortran
+&BANDS
+  prefix  = 'si'
+  filband = 'si.bands'
+/
+
+```
+
+**File 4: `nscf.in`**
+
+```fortran
+&CONTROL
+  calculation  = 'nscf'
+  prefix       = 'si'
+  pseudo_dir   = '/clusterfs/repo/pseudo/'
+/
+&SYSTEM
+  ibrav       = 2
+  celldm(1)   = 10.20
+  nat         = 2
+  ntyp        = 1
+  ecutwfc     = 30.0
+  nbnd        = 12
+  occupations = 'tetrahedra'
+/
+&ELECTRONS
+  conv_thr    = 1.0e-8
+/
+ATOMIC_SPECIES
+  Si  28.0855  Si_ONCV_PBE-1.2.upf
+
+ATOMIC_POSITIONS (alat)
+  Si 0.00 0.00 0.00
+  Si 0.25 0.25 0.25
+
+K_POINTS (automatic)
+  18 18 18 1 1 1
+
+```
+
+**File 5: `dos.in`**
+
+```fortran
+&DOS
+  prefix  = 'si'
+  fildos  = 'si.dos'
+  Emin    = -15.0
+  Emax    = 15.0
+  DeltaE  = 0.05
+/
+
+```
+
+---
+
+## 2. Submitting the SLURM Batch Job
+
+To execute this sequence of calculations, we use a Slurm batch script. Create a file named `run.sh` and paste the following content:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=Silicon_Bands_DOS
+#SBATCH --partition=qdisk
+#SBATCH --nodes=1
+#SBATCH --ntasks=6             # Number of MPI ranks
+#SBATCH --cpus-per-task=2      # OpenMP threads per rank (6 x 2 = 12 cores total)
+#SBATCH --time=24:00:00
+
+# bashquasi automatically reads SLURM_CPUS_PER_TASK=2 and sets OMP_NUM_THREADS=2
+
+NK=2
+NDIAG=1
+
+echo "Job started on node: $(hostname)"
+
+echo "Starting SCF..."
+mpirun -np $SLURM_NTASKS pw.x -nk $NK -ndiag $NDIAG -in scf.in > scf.out
+
+echo "Starting NSCF for Bands..."
+mpirun -np $SLURM_NTASKS pw.x -nk $NK -ndiag $NDIAG -in nscfbands.in > nscfbands.out
+
+echo "Processing Bands..."
+mpirun -np $SLURM_NTASKS bands.x -in bands.in > bands.out
+
+echo "Starting NSCF for DOS..."
+mpirun -np $SLURM_NTASKS pw.x -nk $NK -ndiag $NDIAG -in nscf.in > nscf.out
+
+echo "Processing DOS..."
+mpirun -np $SLURM_NTASKS dos.x -in dos.in > dos.out
+
+echo "Quantum ESPRESSO workflow finished."
+
+```
+
+### Understanding the Resource Allocation
+
+Because our compute nodes contain 12 physical cores, we must strictly design our jobs to respect that limit.
+
+* `#SBATCH --ntasks=6`: We ask Slurm to spawn 6 independent MPI processes.
+* `#SBATCH --cpus-per-task=2`: We assign 2 OpenMP threads to each MPI process to handle the heavy mathematical matrices.
+* **The Result:** $6 \times 2 = 12$. This perfectly fills the 12 physical cores of a single compute node (`#SBATCH --nodes=1`) without overloading the system.
+
+### Understanding the Parallelization Flags (`NK` and `NDIAG`)
+
+We optimize Quantum ESPRESSO's performance across our 6 MPI tasks using physics-specific command line flags.
+
+* **`NK=2`:** We divide the Brillouin zone calculations into 2 separate pools. Since we have 6 total tasks, this places **3 tasks in each pool**.
+* **`NDIAG=1`:** The linear algebra matrix diagonalization requires a perfect square (1, 4, 9, 16). Because we only have 3 tasks in each pool, the largest perfect square that fits is 1.
+
+If we wanted to change the job structure to use purely MPI (12 tasks, 1 thread per task), we could change to `#SBATCH --ntasks=12` and `#SBATCH --cpus-per-task=1`. In that case, we might choose `NK=3` (giving 4 tasks per pool). The largest perfect square that fits in 4 tasks is 4, so we could then optimize the script with `NDIAG=4`.
+
+To submit the job, we run:
+
+```bash
+sbatch run.sh
+
+```
+
+---
+
+## 3. Plotting the Results in Jupyter Notebook
+
+Once the workflow finishes, we can visualize our results. Start an interactive Jupyter Notebook session via VS Code as explained in our general Python user guide, create a new notebook (e.g., `plot.ipynb`), and run the following Python code.
+
+### A Note on the Output Directory (`outdir`)
+
+Because we omitted the `outdir` parameter in our Quantum ESPRESSO input files, all outputs are located right where we submitted the script. In the Python code below, look closely at the variable `outdir = './out/'`. If all our resulting files (like `si.xml` inside `si.save`) are in our current working directory, we must change this line in the script to `outdir = './'`. If we manually organized our files into an `out` folder, we leave it as `./out/`.
+
+### The Plotting Script
+
+```python
+import os
+import glob
+import re
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.ticker import FuncFormatter
+
+# use plotting style from shared repository in QuasiCluster
+plt.style.use('/clusterfs/repo/plot.mplstyle')
+
+# 1. Automate Fermi Energy Extraction from XML
+HA_TO_EV = 27.211386245988
+efermi = 0.0
+outdir = './out/' # change this outdir corresponding to the resulting output folder
+prefix = 'si'
+
+in_files = glob.glob('*.in')
+if in_files:
+    with open(in_files[0], 'r') as f:
+        content = f.read()
+        outdir_match = re.search(r"outdir\s*=\s*['\"](.*?)['\"]", content)
+        prefix_match = re.search(r"prefix\s*=\s*['\"](.*?)['\"]", content)
+        if outdir_match:
+            outdir = outdir_match.group(1)
+        if prefix_match:
+            prefix = prefix_match.group(1)
+
+xml_file = os.path.join(outdir, f"{prefix}.xml")
+if not os.path.exists(xml_file):
+    xml_files = glob.glob(os.path.join(outdir, '*.xml'))
+    if xml_files:
+        xml_file = xml_files[0]
+
+try:
+    with open(xml_file, 'r') as f:
+        xml_content = f.read()
+        fermi_match = re.search(r'<fermi_energy>\s*(.*?)\s*</fermi_energy>', xml_content)
+        highest_match = re.search(r'<highestOccupiedLevel>\s*(.*?)\s*</highestOccupiedLevel>', xml_content)
+        lowest_match = re.search(r'<lowestUnoccupiedLevel>\s*(.*?)\s*</lowestUnoccupiedLevel>', xml_content)
+
+        if fermi_match:
+            efermi_ha = float(fermi_match.group(1))
+            efermi = efermi_ha * HA_TO_EV
+            print(f"Extracted Fermi energy: {efermi:.4f} eV")
+        elif highest_match and lowest_match:
+            highest = float(highest_match.group(1))
+            lowest = float(lowest_match.group(1))
+            efermi_ha = (highest + lowest) / 2.0
+            efermi = efermi_ha * HA_TO_EV
+            print(f"Extracted mid-gap energy: {efermi:.4f} eV")
+        else:
+            print("Energy levels not found in XML. Defaulting Fermi energy to 0.0 eV.")
+except FileNotFoundError:
+    print(f"XML file {xml_file} not found. Defaulting Fermi energy to 0.0 eV.")
+
+# 2. Initialize figure
+fig = plt.figure(figsize=(8, 5))
+axBand = fig.add_axes([0,    0, 0.55, 1])
+axDOS  = fig.add_axes([0.70, 0, 0.30, 1])
+
+# 3. PLOT EBANDS
+data = np.loadtxt(f'{prefix}.bands.gnu')
+k = np.unique(data[:, 0])
+bands = np.reshape(data[:, 1], (-1, len(k)))
+
+# Map the 5 high-symmetry points defined in nscfbands.in (each segment has 20 points)
+pt_L  = k[0]
+pt_G1 = k[20]
+pt_X  = k[40]
+pt_K  = k[60]
+pt_G2 = k[-1]
+
+axBand.axhline(0, c='gray', ls=':')
+axBand.axvline(pt_G1, c='gray')
+axBand.axvline(pt_X, c='gray')
+axBand.axvline(pt_K, c='gray')
+
+for band in range(len(bands)):
+    axBand.plot(k, bands[band, :] - efermi, c='b')
+
+axBand.set_xlabel('High-symmetry points')
+axBand.set_ylabel('Energy (eV)')
+axBand.set_xlim(pt_L, pt_G2)
+axBand.set_ylim(-10, 5)
+
+axBand.set_xticks([pt_L, pt_G1, pt_X, pt_K, pt_G2], ['L', r'$\Gamma$', 'X', 'U,K', r'$\Gamma$'])
+axBand.tick_params(axis='x', which='minor', bottom=False, top=False)
+axBand.yaxis.set_major_locator(mpl.ticker.MultipleLocator(5))
+axBand.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(1))
+
+# 4. PLOT DOS
+ener, dos, idos = np.loadtxt(f'{prefix}.dos', unpack=True)
+axDOS.plot(dos, ener - efermi, color='red')
+
+axDOS.set_xlabel('DOS (states/eV/u.c.)')
+axDOS.set_ylabel('Energy (eV)')
+axDOS.set_xlim(0, 5)
+axDOS.set_ylim(-10, 5)
+axDOS.yaxis.set_major_locator(mpl.ticker.MultipleLocator(5))
+axDOS.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(1))
+
+def format_dos_ticks(x, pos):
+    if x == 0:
+        return '0'
+    else:
+        return f'{x:.1f}'
+
+axDOS.xaxis.set_major_formatter(FuncFormatter(format_dos_ticks))
+
+# 5. ADD PANEL LABELS
+axBand.text(-0.22, 0.98, '(a)', transform=axBand.transAxes)
+axDOS.text(-0.4, 0.98, '(b)', transform=axDOS.transAxes)
+
+plt.savefig('plot-bands-dos.pdf', bbox_inches='tight')
+
+```
+
+Executing this code blocks aligns the extracted Fermi level automatically and applies our standard aesthetic using `plt.style.use('/clusterfs/repo/plot.mplstyle')`. It creates a highly readable, publication-ready PDF file containing both the band structure and the density of states.
