@@ -30,12 +30,10 @@ Note that as of September 4, 2026 we use the following `munge` and `slurm` setti
 ```bash
 for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
     # Create the munge group and user (UID/GID 1111)
-    ssh -t $node 'echo "munge:x:1111:" | sudo tee -a /etc/group'
-    ssh -t $node 'echo "munge:x:1111:1111:Munge Auth:/nonexistent:/usr/sbin/nologin" | sudo tee -a /etc/passwd '
+    ssh -t $node 'sudo groupadd -g 1111 munge && sudo useradd -m -d /home/munge -u 1111 -g munge -s /bin/bash munge'
     
     # Create the slurm group and user (UID/GID 1121)
-    ssh -t $node 'echo "slurm:x:1121:" | sudo tee -a /etc/group'
-    ssh -t $node 'echo "slurm:x:1121:1121:Slurm Manager:/nonexistent:/bin/bash" | sudo tee -a /etc/passwd'
+    ssh -t $node 'sudo groupadd -g 1121 slurm && sudo useradd -m -d /home/slurm -u 1121 -g slurm -s /bin/bash slurm'
 done
 ```
 

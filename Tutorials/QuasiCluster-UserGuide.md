@@ -95,7 +95,14 @@ This guide explains how we can connect Visual Studio Code (VS Code) to the clust
 
 To interact with the cluster and edit scripts, we first need to connect VS Code to our login node (`quasi06`). Because our cluster is accessible globally, we use a Cloudflare tunnel to securely route the SSH connection to `ssh.quasicluster.org`.
 
-We must ensure the `cloudflared` executable is installed on our local machine. Then, we configure our local SSH settings by editing the SSH config file. The `User username` and `IdentityFile ...` part should be modified accordingly to our real `username` and `/path/to/user/quasikey` (the real location where we put `quasikey` given by the QuasiCluster administrators).
+We must ensure the `cloudflared` executable is installed on our local machine (e.g., laptop or desktop PC). For Debian-based Linux users, the `cloudflared` installation is quite simple:
+```bash
+curl -L --output cloudflared.deb https://github.com
+sudo dpkg -i cloudflared.deb
+```
+For Windows users, you can download `cloudflared` by "Googling" or from the [Cloudflare Download Page](https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.msi). Install it by clicking the downloaded installer.
+
+Then, we configure our local SSH settings by creating and editing the SSH config file. The `User username` and `IdentityFile ...` part should be modified accordingly to our real QuasiCluster `username` and `/path/to/user/quasikey` (the real location where we put `quasikey` given by the QuasiCluster administrators).
 
 **For Linux and macOS users,**
 add the following configuration to `~/.ssh/config`:
@@ -115,7 +122,7 @@ Host quasicluster
 ```
 
 **For Windows users,**
-add the following configuration to `C:\Users\Username\.ssh\config`. Ensure `cloudflared.exe` is installed and accessible in the system PATH:
+add the following configuration to `C:\Users\Username\.ssh\config`. Ensure `cloudflared.exe` in the ProxyCommand part is installed and accessible via the system PATH.
 
 ```text
 Host *
@@ -130,13 +137,14 @@ Host quasicluster
     User username
     IdentityFile C:\Users\Username\.ssh\quasikey
 ```
+If we are not sure that `cloudflared.exe` is in the system PATH, we can change it to the exact location of the executable path, e.g., `"C:\Program Files (x86)\cloudflared\cloudflared.exe"` or `"C:\Program Files\cloudflared\cloudflared.exe"` depending on how our Windows system install it.
 
 Again, don't forget to adjust the `User` and `IdentityFile` parts acccording to our real situations.
 
-**Connecting via VS Code:**
+**Connecting by VS Code:**
 
 1. Open VS Code on the local computer.
-2. Ensure the **Remote - SSH** and **Jupyter** extensions are installed.
+2. Ensure the **Remote - SSH** and **Jupyter** extensions are installed in the VS Code **Extensions** panel.
 3. Open the Command Palette (`Ctrl + Shift + P` or `Cmd + Shift + P`) and select **Remote-SSH: Connect to Host...**
 4. Select `quasicluster` from the list.
 5. Open the working folder (e.g., something like `/clusterfs/username/my_project`) via the File Explorer.
