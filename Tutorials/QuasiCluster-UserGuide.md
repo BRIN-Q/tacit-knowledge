@@ -9,7 +9,7 @@
 
 # Brief Introduction
 
-QuasiCluster is our "in-house" mini high-performance computing (HPC) environment running on Debian Linux. This cluster is designed to accelerate computational physics simulations, quantum modeling, and medium-level data analysis, which are too heavy for personal computers but still do not yet need "real" BRIN HPC system. Our architecture is divided into two primary components to ensure stability and efficiency. The main access point is the login node, `quasi06`, which is equipped with 4 CPU cores. We use this node strictly for managing files, compiling code, preparing input scripts, and submitting jobs. The actual heavy computing is handled by our five compute nodes, designated `quasi07` through `quasi11`. Each compute node is powered by 12 physical (double-threaded) cores and is securely managed by the Slurm workload manager to guarantee peak performance and prevent resource collisions among our users.
+QuasiCluster is our "in-house" **MINI** high-performance computing (HPC) environment running on Debian Linux. This cluster is designed to accelerate computational physics simulations, quantum modeling, and medium-level data analysis, which are too heavy for personal computers but still do not yet need "real" BRIN HPC system. Our architecture is divided into two primary components to ensure stability and efficiency. The main access point is the login node, `quasi06`, which is equipped with 4 CPU cores. We use this node strictly for managing files, compiling code, preparing input scripts, and submitting jobs. The actual heavy computing is handled by our five compute nodes, designated `quasi07` through `quasi11`. Each compute node is powered by 12 physical (double-threaded) cores and is securely managed by the Slurm workload manager to guarantee peak performance and prevent resource collisions among the users.
 
 All nodes are interconnected through a shared storage system located at `/clusterfs`. This infrastructure ensures that our project files, optimized Python environments, and shared data repositories (such as Quantum ESPRESSO pseudopotentials) are universally accessible regardless of which node executes our jobs. Slurm dynamically tracks memory usage and core allocations across the network, allowing multiple users to safely share the compute nodes without interfering with each other's calculations.
 
@@ -22,6 +22,57 @@ ssh -i /path/to/quasikey username@10.10.216.30
 ```
 
 *(Note: If we are working remotely outside the BRIN-Q network, we must use the Cloudflare SSH configuration detailed in the VS Code integration section of this guide.)*
+
+Suppose the login process is successful, we might immediately face the following login display status:
+
+```
+Last login: Thu Sep 10 15:31:26 2026 from ...
+
+Welcome to QuasiCluster, ...!
+
+=== Storage Status ===
+Home Directory (/clusterfs/...): ...
+(Type myusage for a detailed breakdown)
+
+=== Compute Resource Status ===
+/clusterfs: 1,4T Used / 3,6T Total
+Load Averages:
+  quasi06: 1.00 / 4 CPUs
+  quasi07: down
+  quasi08: down
+  quasi09: down
+  quasi10: down
+  quasi11: down
+
+=== Slurm Jobs ===
+You currently have no active or pending jobs.
+```
+See that some nodes seem to be "down", but it's not always the case. Try first to login the "down" nodes and exit one by one:
+```bash
+ssh quasi07
+exit
+```
+```bash
+ssh quasi08
+exit
+```
+```bash
+ssh quasi09
+exit
+```
+```bash
+ssh quasi10
+exit
+```
+```bash
+ssh quasi11
+exit
+```
+After that, try the customized `clust` command:
+```bash
+clust
+```
+Hopefully, all nodes are "up" now.
 
 ### Essential Commands
 
