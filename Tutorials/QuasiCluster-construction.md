@@ -558,6 +558,8 @@ sudo systemctl enable rpcbind ypbind
 
 ```
 
+---
+
 ## Clustering Setup
 
 ### 1. System Preparation and Time Synchronization
