@@ -2,31 +2,44 @@
 
 This document is our reference manual and teaching note for current and future QuasiCluster administrators. We describe our login node (`quasi06`) and five compute nodes (`quasi07` to `quasi11`). We assume that Debian is already installed on every node and that administrators have `sudo` access. We use Slurm to schedule work, Munge for Slurm authentication, OpenMPI for parallel jobs, and scientific applications such as Quantum ESPRESSO.
 
-The hostnames, addresses, account IDs, paths, partition name, and hardware figures below describe **our installation**. Before applying a command to a rebuilt or replacement node, we should check those values against the running systems. Commands intended for all nodes presume that hostname resolution and administrator SSH access already work and we run them from `quasi06`. We do not run installation commands against a production node without checking its current state and arranging an appropriate maintenance window.
+Our hardware inventory, based on `neofetch`/`fastfetch` output from `quasi06` and representative compute node `quasi07`, is summarized below. The five compute nodes are basically of the same model and general configuration. However, it is better that we still measure each node's usable memory and CPU layout before adding it to Slurm.
+
+| Role | Node(s) | System | Processor | Memory | Graphics hardware |
+| --- | --- | --- | --- | ---: | --- |
+| Login | `quasi06` | MSI MS-7D41; Debian GNU/Linux 13 (trixie) | Intel Core i9-13900K; 4 logical CPUs | 64,088 MiB | Intel UHD Graphics 770 |
+| Compute | `quasi07` to `quasi11` | Lenovo ThinkStation P358 Tower; Debian GNU/Linux 13 (trixie) | AMD Ryzen 9 PRO 5945; 24 logical CPUs per node | 128,701 MiB on `quasi07` | NVIDIA GeForce RTX 3080 Lite Hash Rate per node |
+
+The memory figure in the compute row is measured on `quasi07`. Our current Slurm example records `RealMemory=128701` for `quasi07` to `quasi09` and `128669` for `quasi10` and `quasi11`. These are usable-memory settings, so we do not copy one value to a future node without measuring it. Although GPUs are physically present, our present `slurm.conf` does not declare them as schedulable GPU resources. GPU scheduling would require separate Slurm GRES configuration and checks; the [Slurm GRES guide](https://slurm.schedmd.com/gres.html) describes those settings.
+
+The hostnames, addresses, account IDs, paths, partition name, and hardware figures below describe **our installation**. Before applying a command to a rebuilt or replacement node, we should check those values against the running systems. Later commands intended for all nodes presume that hostname resolution and administrator SSH access already work and we run them from `quasi06`. We do not run installation commands against a production node without checking its current state and arranging an appropriate maintenance window.
 
 ## Table of Contents
 
 - [Core Infrastructure](#core-infrastructure)
   - [1. Shared Folder Preparation](#1-shared-folder-preparation)
-  - [2. SSH Configuration and User Management](#2-ssh-configuration-and-user-management)
-    - [The User Creation Script](#the-user-creation-script)
-  - [3. Standardized Bash Environment (`bashquasi`)](#3-standardized-bash-environment-bashquasi)
-  - [4. Network File System (NFS) using `autofs`](#4-network-file-system-nfs-using-autofs)
+  - [2. Hostname Resolution and Administrator SSH](#2-hostname-resolution-and-administrator-ssh)
+  - [3. Network File System (NFS) using `autofs`](#3-network-file-system-nfs-using-autofs)
     - [NFS Server Setup (`quasi06`)](#nfs-server-setup-quasi06)
     - [NFS Client Setup (`quasi07` to `quasi11`)](#nfs-client-setup-quasi07-to-quasi11)
-  - [5. Network Information Service (NIS) Setup](#5-network-information-service-nis-setup)
+  - [4. Network Information Service (NIS) Setup](#4-network-information-service-nis-setup)
     - [NIS Master Setup (`quasi06`)](#nis-master-setup-quasi06)
     - [NIS Client Setup (`quasi07` to `quasi11`)](#nis-client-setup-quasi07-to-quasi11)
+  - [5. Standardized Bash Environment (`bashquasi`)](#5-standardized-bash-environment-bashquasi)
+  - [6. User Creation and Verification](#6-user-creation-and-verification)
 - [Clustering Setup](#clustering-setup)
   - [1. System Preparation and Time Synchronization](#1-system-preparation-and-time-synchronization)
   - [2. Munge Authentication Setup](#2-munge-authentication-setup)
   - [3. Slurm Configuration (Shared Directory)](#3-slurm-configuration-shared-directory)
   - [4. Install and Start Slurm Services](#4-install-and-start-slurm-services)
   - [5. OpenMPI Configuration](#5-openmpi-configuration)
-  - [6. Quantum ESPRESSO Deployment](#6-quantum-espresso-deployment)
-  - [7. Standard Job Submission Workflow](#7-standard-job-submission-workflow)
+  - [6. Shared Python Environment (`qupy`)](#6-shared-python-environment-qupy)
+  - [7. Quantum ESPRESSO Deployment](#7-quantum-espresso-deployment)
+  - [8. Standard Job Submission Workflow](#8-standard-job-submission-workflow)
+- [Adding a New Compute Node](#adding-a-new-compute-node)
 
 ## Core Infrastructure
+
+We first establish administrator access and shared account services. We then prepare the common shell settings and create ordinary users. This order lets us administer every machine before asking those machines to recognize and mount a new user's home directory.
 
 ### 1. Shared Folder Preparation
 
@@ -47,7 +60,20 @@ df -h /clusterfs
 
 If `/clusterfs` is a dedicated filesystem, we confirm it is mounted before writing data. We also back up its user data and site configuration separately; the compute nodes' NFS mounts are copies of the same storage view, not backups.
 
-### 2. SSH Configuration and User Management
+### 2. Hostname Resolution and Administrator SSH
+
+Before using SSH commands that refer to node names, we keep `/etc/hosts` consistent on `quasi06` and each compute node. These are the addresses of our present installation; we verify the addresses on the interfaces before editing a rebuilt host:
+
+```text
+10.10.216.30    quasi06
+10.10.240.17    quasi07
+10.10.240.18    quasi08
+10.10.240.19    quasi09
+10.10.240.15    quasi10
+10.10.240.16    quasi11
+```
+
+We check `getent hosts quasi06` and the compute-node hostnames on all nodes. For a future `quasi12`, we first assign and verify its real address, then update these mappings. This initial hostname lookup does not depend on NFS or NIS.
 
 SSH provides administrator access to the nodes and, where our workflow requires it, authenticated connections between them. On each node (`quasi06` through `quasi11`), we install the server and client:
 
@@ -57,79 +83,153 @@ sudo apt install openssh-server openssh-client
 sudo systemctl enable --now ssh
 ```
 
-We first check that the hostnames in the NFS section resolve correctly and that an administrator can log in to each node. SSH keys created for ordinary users are private credentials. We never publish their private halves, and we control access to the shared home directories that contain them.
+We check that an administrator can log in from `quasi06` to each compute node before using the remote setup loops in later sections. These administrator credentials are separate from the ordinary user keys generated after NFS and NIS are working. SSH keys created for ordinary users are private credentials; we control access to the shared home directories that contain them.
 
-#### The User Creation Script
+### 3. Network File System (NFS) using `autofs`
 
-After NFS and NIS are configured, we create user accounts on `quasi06` with `/clusterfs/skel/newuser.sh`. The script puts each account in `/clusterfs/staff`, `/clusterfs/students`, or `/clusterfs/visitors`, assigns the existing `users` group, links our shared Bash configuration, and generates an Ed25519 key pair. We run it **only on `quasi06`** with an interactive terminal. Its checks stop duplicate names or malformed usernames; we still inspect any partially created account if a later command fails.
+We export `/clusterfs` from `quasi06` and use `autofs` on the compute nodes to mount it when accessed. `autofs` mounts on demand; it does not make NFS storage independent of `quasi06`. In particular, losing the server or the internal network can interrupt running jobs and prevent access to user homes. We keep compute-node scratch on local disks for appropriate single-node jobs.
 
-Before using the script, we create `/clusterfs/skel/bashquasi` and `/clusterfs/skel/emacs`, confirm that `getent group users` succeeds, and finish the NIS master setup below. If we do not use a shared Emacs configuration, we remove the `.emacs` link and its prerequisite check from the script.
+With hostname resolution and administrator SSH established, we install the NFS server on `quasi06`, and NFS client utilities and `autofs` on the compute nodes. We verify that each client resolves `quasi06` to the intended internal address.
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo "Add a new user"
-read -r -p "1. Staff, 2. Student, or 3. Visitor? Enter 1, 2, or 3: " ans
-case "$ans" in
-    1) status=staff ;;
-    2) status=students ;;
-    3) status=visitors ;;
-    *) echo "Invalid selection" >&2; exit 1 ;;
-esac
-
-read -r -p "Enter a username (for example, taro): " name
-if [[ ! "$name" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
-    echo "Use a lowercase Linux username without spaces or shell symbols" >&2
-    exit 1
-fi
-if getent passwd "$name" >/dev/null; then
-    echo "The account $name already exists" >&2
-    exit 1
-fi
-getent group users >/dev/null
-for item in /clusterfs/skel/bashquasi /clusterfs/skel/emacs; do
-    if [[ ! -f "$item" ]]; then
-        echo "Missing prerequisite: $item" >&2
-        exit 1
-    fi
-done
-
-homedir="/clusterfs/$status/$name"
-echo "Creating $name with home directory $homedir"
-sudo mkdir -p "/clusterfs/$status"
-sudo useradd -m -d "$homedir" -s /bin/bash -g users "$name"
-
-# Set a unique initial password interactively. Never embed a default password.
-sudo passwd "$name"
-
-# This shared file is read by our .bashrc; keep the home directory private.
-printf '%s\n' 'source /clusterfs/skel/bashquasi' | sudo tee "$homedir/.bashrc" >/dev/null
-sudo ln -sfn "$homedir/.bashrc" "$homedir/.profile"
-sudo ln -sfn /clusterfs/skel/emacs "$homedir/.emacs"
-sudo touch "$homedir/.hushlogin"
-sudo install -d -o "$name" -g users -m 700 "$homedir/.ssh"
-sudo -u "$name" ssh-keygen -t ed25519 -f "$homedir/.ssh/id_ed25519" -q -N ''
-sudo -u "$name" cp "$homedir/.ssh/id_ed25519.pub" "$homedir/.ssh/authorized_keys"
-sudo chown "$name":users "$homedir/.bashrc" "$homedir/.hushlogin"
-sudo chmod 700 "$homedir"
-sudo chmod 600 "$homedir/.ssh/id_ed25519" "$homedir/.ssh/authorized_keys"
-sudo chmod 644 "$homedir/.ssh/id_ed25519.pub"
-
-# Rebuild NIS maps after creating the local account and setting its password.
-(cd /var/yp && sudo make)
-echo "Account $name created; verify it from a compute node."
+# On quasi06
+sudo apt update
+sudo apt install nfs-kernel-server
 ```
 
-The `authorized_keys` copy permits SSH authentication using this account's private key. We authorize only the access pattern our cluster needs. Because the key lives on shared NFS storage, administrators with access to that storage must protect it and review SSH server policy. If passwordless node access is not required for ordinary users, we omit the key generation and `authorized_keys` steps. We use a separate, documented process for key rotation or account removal.
+```bash
+# On each compute node
+sudo apt update
+sudo apt install nfs-common autofs
+```
 
-After creation, we check `getent passwd <username>` on `quasi06` and on a compute node, check `id <username>`, and confirm that the home directory is mounted. We do not distribute plaintext passwords or leave a published common default in this document.
+#### NFS Server Setup (`quasi06`)
 
-### 3. Standardized Bash Environment (`bashquasi`)
+We configure `/etc/exports` on `quasi06` for the internal networks that we intend to trust:
 
-We manage aliases, Slurm shortcuts, Python activation, and interactive login displays in one shared file. The user creation script writes a small `.bashrc` that sources `/clusterfs/skel/bashquasi`; `.profile` then points to that `.bashrc`. This file returns immediately for non-interactive Bash shells, so its aliases and thread settings are not a reliable way to configure a batch script. We set job requirements explicitly in `#SBATCH` directives and relevant environment variables in the job script. Edits to this shared file affect every account that sources it, so we test changes with a fresh interactive shell.
+```text
+/clusterfs    10.10.216.0/21(rw,sync,no_root_squash,no_subtree_check)
+/clusterfs    10.10.240.0/22(rw,sync,no_root_squash,no_subtree_check)
+```
 
-We store the configuration at `/clusterfs/skel/bashquasi`.
+With a `/21` mask (`255.255.248.0`), the network base is **`10.10.216.0/21`**, spanning `10.10.216.0` through `10.10.223.255`; it includes `quasi06` (`10.10.216.30`). The second rule spans `10.10.240.0` through `10.10.243.255`. We confirm that these *entire* ranges match the addresses we intend to authorize. If eventually the intended clients are really only `quasi07` through `quasi11`, we should narrow the export to those specific hosts or a smaller appropriate network.
+
+`no_root_squash` lets root on an authorized client access the export with root privileges. Our administration may depend on that behavior, but it means that a compromised or mismanaged compute node can alter shared files. We restrict access at the network boundary, maintain control of compute-node root accounts, and review whether `root_squash` is workable for our installation. NFS with its default `sec=sys` does not itself encrypt traffic. See the [NFS exports manual](https://man7.org/linux/man-pages/man5/exports.5.html) for the precise behavior of these options.
+
+After editing, we apply and inspect the effective exports:
+
+```bash
+sudo exportfs -ra
+sudo exportfs -v
+sudo systemctl status nfs-kernel-server
+```
+
+#### NFS Client Setup (`quasi07` to `quasi11`)
+
+On each compute node, we configure a direct `autofs` map. We add this line to `/etc/auto.master` (or an equivalent file in `/etc/auto.master.d/`):
+
+```text
+/-    /etc/auto.mount
+```
+
+We create `/etc/auto.mount` with the following entry:
+
+```text
+/clusterfs    -fstype=nfs,rw    quasi06:/clusterfs
+```
+
+We restart the service and trigger the mount by accessing the directory:
+
+```bash
+sudo systemctl enable --now autofs
+sudo systemctl restart autofs
+ls /clusterfs
+findmnt -T /clusterfs
+```
+
+`findmnt -T /clusterfs` should resolve to the NFS mount after access. We also test a read and a permitted write as an ordinary cluster user. We do not place separate local data under the compute nodes' `/clusterfs` mountpoint, because it will be hidden while NFS is mounted.
+
+### 4. Network Information Service (NIS) Setup
+
+We use NIS for our existing cluster account directory: we create local user accounts on `quasi06`, build NIS maps there, and look up the same numeric UIDs and GIDs on the compute nodes. NFS permissions depend on numeric IDs matching across nodes. NIS is a legacy protocol and does not provide modern cryptographic protection for account data; we limit it to the trusted internal network, check firewall exposure, and protect both the server and its maps. The NIS domain name below is **not** a DNS domain.
+
+We install `nis` on all nodes, supplying the domain `quasi` if the package installer requests it. For systems where we use `nscd`, we also install it explicitly before restarting it:
+
+```bash
+sudo apt install nis nscd
+```
+
+#### NIS Master Setup (`quasi06`)
+
+We configure `quasi06` as the NIS master. In `/etc/ypserv.securenets`, we remove or comment out any unrestricted entries and allow only the intended internal address ranges:
+
+```text
+# 0.0.0.0                0.0.0.0
+# ::/0
+255.255.248.0   10.10.216.0
+255.255.252.0   10.10.240.0
+```
+
+The `10.10.216.0` entry is the network base for the `/21` described in the NFS section. We verify that the effective rules do not include a broad fallback line elsewhere in this file. NIS `securenets` is one restriction; it does not replace a firewall or secure authentication.
+
+We put the NIS domain in `/etc/defaultdomain`:
+
+```text
+quasi
+```
+
+We initialize the NIS database **once** on a fresh master:
+
+```bash
+sudo /usr/lib/yp/ypinit -m
+```
+
+For an existing master, we inspect the configuration and maps rather than reinitializing them. After creating a local account or changing data exported in NIS maps, we rebuild the maps:
+
+```bash
+sudo systemctl enable --now rpcbind ypserv
+cd /var/yp
+sudo make
+```
+
+The exact maps built depend on `/var/yp/Makefile`; we inspect that file if an expected account or host entry is absent. Hostname resolution in this guide uses `/etc/hosts` on each node, so rebuilding NIS host maps does **not** replace updating those local files.
+
+#### NIS Client Setup (`quasi07` to `quasi11`)
+
+On each compute node, we add the master and domain to `/etc/yp.conf`:
+
+```text
+domain quasi server quasi06
+```
+
+We use local files first in `/etc/nsswitch.conf`, followed by systemd and NIS where supported by the installed Debian packages:
+
+```text
+passwd:         files systemd nis
+group:          files systemd nis
+shadow:         files nis
+```
+
+We also set `/etc/defaultdomain` to `quasi`:
+
+```text
+quasi
+```
+
+After making the change, we restart the installed services; we do not assume `nscd` is present unless we installed it:
+
+```bash
+sudo systemctl enable --now rpcbind ypbind
+sudo systemctl restart rpcbind ypbind nscd
+```
+
+We verify on a compute node with `domainname`, `ypwhich`, `ypcat passwd.byname`, `getent passwd <username>`, and `id <username>`. We restrict access to map output because account information can be sensitive. If `getent` fails while `ypcat` succeeds, we examine `nsswitch.conf` and the installed NSS NIS module. We do not create duplicate ordinary users locally on compute nodes.
+
+### 5. Standardized Bash Environment (`bashquasi`)
+
+We manage aliases, Slurm shortcuts, Python activation, and interactive login displays in one shared file. Once this file is ready, the user creation script in the next section (Section 6) writes a small `.bashrc` that sources `/clusterfs/skel/bashquasi`; `.profile` then points to that `.bashrc`. This file returns immediately for non-interactive Bash shells, so its aliases and thread settings are not a reliable way to configure a batch script. We set job requirements explicitly in `#SBATCH` directives and relevant environment variables in the job script. Edits to this shared file affect every account that sources it, so we test changes with a fresh interactive shell.
+
+We store the configuration at `/clusterfs/skel/bashquasi`. Its `qupy` alias refers to the shared Python environment installed in Clustering Setup, Section 6; we test that alias after creating the environment.
 
 ```bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
@@ -468,154 +568,71 @@ fi
 
 The display uses `df` column 2 for total size and column 4 for available space. The SSH probes in `clust` report `down` if a node cannot be reached **or** if user key authentication fails, so we confirm ambiguous results with `sinfo` and an administrator SSH check. The `clqe` alias removes QE restart files (`*.save`); we use it only after inspecting the working directory and preserving data we need. For Jupyter, we keep access within our trusted SSH or VS Code connection and verify that the chosen port is free.
 
-### 4. Network File System (NFS) using `autofs`
+### 6. User Creation and Verification
 
-We export `/clusterfs` from `quasi06` and use `autofs` on the compute nodes to mount it when accessed. `autofs` mounts on demand; it does not make NFS storage independent of `quasi06`. In particular, losing the server or the internal network can interrupt running jobs and prevent access to user homes. We keep compute-node scratch on local disks for appropriate single-node jobs.
+We create ordinary user accounts only after `/clusterfs` is mounted on the compute nodes, NIS account lookup works, and the shared `bashquasi` file is ready. We use `/clusterfs/skel/newuser.sh` on `quasi06`. The script puts each account in `/clusterfs/staff`, `/clusterfs/students`, or `/clusterfs/visitors`, assigns the existing `users` group, links our shared Bash configuration, and generates an Ed25519 key pair. We run it **only on `quasi06`** with an interactive terminal. Its checks stop duplicate names or malformed usernames; we still inspect any partially created account if a later command fails.
 
-First, we keep `/etc/hosts` consistent across login and compute nodes. These addresses are specific to our installation; we verify them against each machine's actual interface before changing a live configuration:
-
-```text
-10.10.216.30    quasi06
-10.10.240.17    quasi07
-10.10.240.18    quasi08
-10.10.240.19    quasi09
-10.10.240.15    quasi10
-10.10.240.16    quasi11
-```
-
-We check name resolution with `getent hosts quasi06` and an appropriate compute-node hostname from every node. We install the NFS server on `quasi06`, and NFS client utilities and `autofs` on the compute nodes:
+Before using the script, we create `/clusterfs/skel/bashquasi` and `/clusterfs/skel/emacs`, confirm that `getent group users` succeeds, and verify the NIS master configured above. If we do not use a shared Emacs configuration, we remove the `.emacs` link and its prerequisite check from the script.
 
 ```bash
-# On quasi06
-sudo apt update
-sudo apt install nfs-kernel-server
+#!/usr/bin/env bash
+set -euo pipefail
 
-# On each compute node
-sudo apt update
-sudo apt install nfs-common autofs
+echo "Add a new user"
+read -r -p "1. Staff, 2. Student, or 3. Visitor? Enter 1, 2, or 3: " ans
+case "$ans" in
+    1) status=staff ;;
+    2) status=students ;;
+    3) status=visitors ;;
+    *) echo "Invalid selection" >&2; exit 1 ;;
+esac
+
+read -r -p "Enter a username (for example, taro): " name
+if [[ ! "$name" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+    echo "Use a lowercase Linux username without spaces or shell symbols" >&2
+    exit 1
+fi
+if getent passwd "$name" >/dev/null; then
+    echo "The account $name already exists" >&2
+    exit 1
+fi
+getent group users >/dev/null
+for item in /clusterfs/skel/bashquasi /clusterfs/skel/emacs; do
+    if [[ ! -f "$item" ]]; then
+        echo "Missing prerequisite: $item" >&2
+        exit 1
+    fi
+done
+
+homedir="/clusterfs/$status/$name"
+echo "Creating $name with home directory $homedir"
+sudo mkdir -p "/clusterfs/$status"
+sudo useradd -m -d "$homedir" -s /bin/bash -g users "$name"
+
+# Set a unique initial password interactively. Never embed a default password.
+sudo passwd "$name"
+
+# This shared file is read by our .bashrc; keep the home directory private.
+printf '%s\n' 'source /clusterfs/skel/bashquasi' | sudo tee "$homedir/.bashrc" >/dev/null
+sudo ln -sfn "$homedir/.bashrc" "$homedir/.profile"
+sudo ln -sfn /clusterfs/skel/emacs "$homedir/.emacs"
+sudo touch "$homedir/.hushlogin"
+sudo install -d -o "$name" -g users -m 700 "$homedir/.ssh"
+sudo -u "$name" ssh-keygen -t ed25519 -f "$homedir/.ssh/id_ed25519" -q -N ''
+sudo -u "$name" cp "$homedir/.ssh/id_ed25519.pub" "$homedir/.ssh/authorized_keys"
+sudo chown "$name":users "$homedir/.bashrc" "$homedir/.hushlogin"
+sudo chmod 700 "$homedir"
+sudo chmod 600 "$homedir/.ssh/id_ed25519" "$homedir/.ssh/authorized_keys"
+sudo chmod 644 "$homedir/.ssh/id_ed25519.pub"
+
+# Rebuild NIS maps after creating the local account and setting its password.
+(cd /var/yp && sudo make)
+echo "Account $name created; verify it from a compute node."
 ```
 
-#### NFS Server Setup (`quasi06`)
+The `authorized_keys` copy permits SSH authentication using this account's private key. We authorize only the access pattern our cluster needs. Because the key lives on shared NFS storage, administrators with access to that storage must protect it and review SSH server policy. If passwordless node access is not required for ordinary users, we omit the key generation and `authorized_keys` steps. We use a separate, documented process for key rotation or account removal.
 
-We configure `/etc/exports` on `quasi06` for the internal networks that we intend to trust:
-
-```text
-/clusterfs    10.10.240.0/22(rw,sync,no_root_squash,no_subtree_check)
-/clusterfs    10.10.216.0/21(rw,sync,no_root_squash,no_subtree_check)
-```
-
-The original note wrote the second network as `10.10.219.0/21`. With a `/21` mask (`255.255.248.0`), the network base is **`10.10.216.0/21`**, spanning `10.10.216.0` through `10.10.223.255`; it includes `quasi06` (`10.10.216.30`). The first rule spans `10.10.240.0` through `10.10.243.255`. We confirm that these *entire* ranges match the addresses we intend to authorize. If the intended clients are only `quasi07` through `quasi11`, we should narrow the export to those specific hosts or a smaller appropriate network.
-
-`no_root_squash` lets root on an authorized client access the export with root privileges. Our administration may depend on that behavior, but it means that a compromised or mismanaged compute node can alter shared files. We restrict access at the network boundary, maintain control of compute-node root accounts, and review whether `root_squash` is workable for our installation. NFS with its default `sec=sys` does not itself encrypt traffic. See the [NFS exports manual](https://man7.org/linux/man-pages/man5/exports.5.html) for the precise behavior of these options.
-
-After editing, we apply and inspect the effective exports:
-
-```bash
-sudo exportfs -ra
-sudo exportfs -v
-sudo systemctl status nfs-kernel-server
-```
-
-#### NFS Client Setup (`quasi07` to `quasi11`)
-
-On each compute node, we configure a direct `autofs` map. We add this line to `/etc/auto.master` (or an equivalent file in `/etc/auto.master.d/`):
-
-```text
-/-    /etc/auto.mount
-```
-
-We create `/etc/auto.mount` with the following entry:
-
-```text
-/clusterfs    -fstype=nfs,rw    quasi06:/clusterfs
-```
-
-We restart the service and trigger the mount by accessing the directory:
-
-```bash
-sudo systemctl enable --now autofs
-sudo systemctl restart autofs
-ls /clusterfs
-findmnt -T /clusterfs
-```
-
-`findmnt -T /clusterfs` should resolve to the NFS mount after access. We also test a read and a permitted write as an ordinary cluster user. We do not place separate local data under the compute nodes' `/clusterfs` mountpoint, because it will be hidden while NFS is mounted.
-
-### 5. Network Information Service (NIS) Setup
-
-We use NIS for our existing cluster account directory: we create local user accounts on `quasi06`, build NIS maps there, and look up the same numeric UIDs and GIDs on the compute nodes. NFS permissions depend on numeric IDs matching across nodes. NIS is a legacy protocol and does not provide modern cryptographic protection for account data; we limit it to the trusted internal network, check firewall exposure, and protect both the server and its maps. The NIS domain name below is **not** a DNS domain.
-
-We install `nis` on all nodes, supplying the domain `quasi` if the package installer requests it. For systems where we use `nscd`, we also install it explicitly before restarting it:
-
-```bash
-sudo apt install nis nscd
-```
-
-#### NIS Master Setup (`quasi06`)
-
-We configure `quasi06` as the NIS master. In `/etc/ypserv.securenets`, we remove or comment out any unrestricted entries and allow only the intended internal address ranges:
-
-```text
-# 0.0.0.0                0.0.0.0
-# ::/0
-255.255.248.0   10.10.216.0
-255.255.252.0   10.10.240.0
-```
-
-The `10.10.216.0` entry is the network base for the `/21` described in the NFS section. We verify that the effective rules do not include a broad fallback line elsewhere in this file. NIS `securenets` is one restriction; it does not replace a firewall or secure authentication.
-
-We put the NIS domain in `/etc/defaultdomain`:
-
-```text
-quasi
-```
-
-We initialize the NIS database **once** on a fresh master:
-
-```bash
-sudo /usr/lib/yp/ypinit -m
-```
-
-For an existing master, we inspect the configuration and maps rather than reinitializing them. After creating a local account or changing data exported in NIS maps, we rebuild the maps:
-
-```bash
-sudo systemctl enable --now rpcbind ypserv
-cd /var/yp
-sudo make
-```
-
-The exact maps built depend on `/var/yp/Makefile`; we inspect that file if an expected account or host entry is absent. Hostname resolution in this guide uses `/etc/hosts` on each node, so rebuilding NIS host maps does **not** replace updating those local files.
-
-#### NIS Client Setup (`quasi07` to `quasi11`)
-
-On each compute node, we add the master and domain to `/etc/yp.conf`:
-
-```text
-domain quasi server quasi06
-```
-
-We use local files first in `/etc/nsswitch.conf`, followed by systemd and NIS where supported by the installed Debian packages:
-
-```text
-passwd:         files systemd nis
-group:          files systemd nis
-shadow:         files nis
-```
-
-We also set `/etc/defaultdomain` to `quasi`:
-
-```text
-quasi
-```
-
-After making the change, we restart the installed services; we do not assume `nscd` is present unless we installed it:
-
-```bash
-sudo systemctl enable --now rpcbind ypbind
-sudo systemctl restart rpcbind ypbind nscd
-```
-
-We verify on a compute node with `domainname`, `ypwhich`, `ypcat passwd.byname`, `getent passwd <username>`, and `id <username>`. We restrict access to map output because account information can be sensitive. If `getent` fails while `ypcat` succeeds, we examine `nsswitch.conf` and the installed NSS NIS module. We do not create duplicate ordinary users locally on compute nodes.
+After creation, we check `getent passwd <username>` on `quasi06` and on a compute node, check `id <username>`, and confirm that the home directory is mounted. We do not distribute plaintext passwords or leave a published common default in this document. Once Slurm is running, we also verify that the account can submit a small job.
 
 ---
 
@@ -942,7 +959,63 @@ Within a Slurm allocation, OpenMPI's `mpirun` can use Slurm's assigned nodes and
 
 Our earlier setup appended `hwloc_base_use_hwthreads_as_cpus = true` and `rmaps_base_mapping_policy = core:OVERSUBSCRIBE` to the global OpenMPI configuration. We do **not** add blanket oversubscription while rebuilding nodes: allowing more ranks than intended can conflict with the CPU allocation and degrade calculations. If those settings already exist, we record the installed OpenMPI version, inspect `/etc/openmpi/openmpi-mca-params.conf`, test a representative allocated job, and then decide whether version-specific placement settings are needed. We avoid appending duplicate lines on each maintenance run.
 
-### 6. Quantum ESPRESSO Deployment
+### 6. Shared Python Environment (`qupy`)
+
+We use one shared Python virtual environment at `/clusterfs/opt/qupy`. We create and maintain it on `quasi06`; compute nodes use the same path through NFS. We first check that each node has a compatible Python installation at the same interpreter path. A virtual environment refers to the Python installation from which it was created and is not a portable directory that we can simply copy to another location; see the [Python `venv` documentation](https://docs.python.org/3/library/venv.html). Our scientific packages also contain compiled extensions, so the Python minor version, architecture, and required system libraries must work on every node.
+
+**Check Python on all nodes:**
+
+```bash
+for node in quasi06 quasi07 quasi08 quasi09 quasi10 quasi11; do
+    echo "=== $node ==="
+    ssh "$node" 'command -v python3 && python3 --version'
+done
+```
+
+We select one interpreter version supported by **all** packages in our intended set and available on each node. We test that combination before replacing a working environment. The commands below use `python3` only if the version we checked works with the entire package set; if we choose a different interpreter, we use its full path for `venv` and install matching development headers on the build node. In particular, a BoltzTraP2 source install may need C++ compilation and matching Python development headers; [BoltzTraP2's package instructions](https://pypi.org/project/BoltzTraP2/) describe these requirements. We do not change Debian's system Python solely to accommodate this environment.
+
+**Create the environment on `quasi06`:**
+
+```bash
+sudo apt update
+sudo apt install python3-venv python3-pip python3-dev g++ build-essential pkg-config -y
+sudo install -d -o root -g root -m 0755 /clusterfs/opt
+sudo python3 -m venv /clusterfs/opt/qupy
+sudo /clusterfs/opt/qupy/bin/python -m pip install --upgrade pip setuptools wheel
+```
+
+We create `/clusterfs/opt/qupy` only if it does not already contain our working environment. Re-running `venv` or upgrading packages in a live shared environment can change behavior for active jobs. Users have read and execute access; only administrators install or upgrade packages.
+
+**Install the scientific and quantum packages:**
+
+```bash
+sudo /clusterfs/opt/qupy/bin/python -m pip install \
+    numpy matplotlib scipy sympy \
+    notebook jupyterlab ipykernel \
+    qiskit qutip pennylane BoltzTraP2
+sudo /clusterfs/opt/qupy/bin/python -m pip check
+sudo chmod -R a+rX,go-w /clusterfs/opt/qupy
+```
+
+`notebook` supplies the `jupyter notebook` command used by our `qupy-jupyter` function. The installed packages can bring further dependencies. If installation fails, we inspect the pip error and the chosen Python version; we do not work around a failed build by installing into system Python or leaving a partly updated environment in service.
+
+**Record and verify the tested installation:**
+
+```bash
+sudo /clusterfs/opt/qupy/bin/python -m pip freeze | sudo tee /clusterfs/skel/qupy-requirements.lock >/dev/null
+/clusterfs/opt/qupy/bin/python -c 'import numpy, matplotlib, scipy, sympy, qiskit, qutip, pennylane, BoltzTraP2; print("qupy imports OK")'
+/clusterfs/opt/qupy/bin/jupyter --version
+for node in quasi07 quasi08 quasi09 quasi10 quasi11; do
+    echo "=== $node ==="
+    ssh "$node" '/clusterfs/opt/qupy/bin/python -c "import numpy, matplotlib, scipy, sympy, qiskit, qutip, pennylane, BoltzTraP2; print(True)"'
+done
+```
+
+The version snapshot in `/clusterfs/skel/qupy-requirements.lock` records what passed our checks. We also record the base Python and Debian versions; `pip freeze` alone does not capture system libraries or build conditions. We verify a small numerical calculation through Slurm, for example with `srun --partition=qdisk --nodes=1 --ntasks=1 /clusterfs/opt/qupy/bin/python -c 'import numpy; print(numpy.arange(3).sum())'`. Once users activate `qupy` with the existing alias (`source /clusterfs/opt/qupy/bin/activate`), `python`, `pip`, and Jupyter should resolve inside this virtual environment. The `qupy-jupyter` function starts a notebook server on an allocated compute node; we confirm access through our SSH or VS Code connection and keep the server within the intended trusted network.
+
+For updates, we first test the proposed package set with the same Python version, record the versions that work, and arrange maintenance before changing `/clusterfs/opt/qupy`. We keep its pathname stable because installed entry points can contain absolute paths. If a rebuild is necessary, we recreate it at that path using a tested package record; we do not copy an existing virtual environment to another directory. We test imports again on every node after the update.
+
+### 7. Quantum ESPRESSO Deployment
 
 We install runtime libraries on each compute node and development packages on the build node. Binary compatibility matters: executables built against one MPI or numerical-library ABI must find matching libraries on all nodes. Before changing BLAS alternatives, we inspect the active implementation and check whether other applications on that node depend on it.
 
@@ -1050,7 +1123,7 @@ done
 
 The shared `/clusterfs/opt/QE/bin` remains a possible fallback in `PATH`, while `/opt/QE/bin` is the preferred local copy in our `bashquasi` file. We check `command -v pw.x` **inside a submitted batch job**, since batch shells do not necessarily load `bashquasi`. We record the version and library dependencies for both copies to prevent a mixed installation.
 
-### 7. Standard Job Submission Workflow
+### 8. Standard Job Submission Workflow
 
 We submit a single-node, eight-rank QE calculation as a batch job. Slurm creates `/scratch/slurm-$SLURM_JOB_ID` with the prolog, and the batch script exports the scratch path explicitly. Quantum ESPRESSO uses `ESPRESSO_TMPDIR` as the default `outdir` when an input file does not set `outdir`; an explicit `outdir` in an input file can direct data elsewhere. We check that `scf.in`, `nscfbands.in`, and `bands.in` use the **same `prefix` and data directory** where they need to share QE data. We keep pseudopotentials in an accessible, stable location. The [QE parallel I/O guide](https://www.quantum-espresso.org/Doc/user_guide/node21.html) explains the role of `outdir/prefix.save` and the limitations of local scratch.
 
@@ -1099,3 +1172,43 @@ echo "Quantum ESPRESSO workflow finished."
 We run `sbatch run.sh` from the directory holding the input files. The redirected `*.out` files and Slurm's stdout/stderr stay in the submission directory. The calculation's files in local scratch are copied after the job to `out-<jobid>/<compute-hostname>/`, then removed from the compute node **only if the copy succeeds**. We inspect the output and the copied directory before deleting any source inputs or expecting to restart the calculation later. A failed QE step stops the batch script because of `set -e`; the epilog still attempts copy-back. If the job needs a restart after node failure or runs across multiple nodes, we plan shared storage or deliberate checkpoint transfers rather than relying on the local scratch directory.
 
 We use `squeue -u "$USER"`, `scontrol show job <jobid>`, and `sinfo -N -l` to inspect job and node states. We review the Slurm log and compute-node journal if a job fails before it starts, and we check both the submission directory and the compute-node scratch area if copy-back fails.
+
+---
+
+## Adding a New Compute Node
+
+We use `quasi12` as an example of onboarding a new compute node **after** a basic Debian installation. These instructions describe the order of work; we use the verified address and measured hardware values of the real machine, not assumed values copied from `quasi07`. We keep the new host out of the production `qdisk` partition until its tests succeed. The earlier sections contain the full configuration examples for each service.
+
+### 1. Record the machine and establish administrator access
+
+We assign the hostname `quasi12`, verify its actual internal IP address, and record its network interfaces, processor layout, memory, storage, Debian and Python versions, and GPU and driver status. On `quasi12` we can use `hostnamectl`, `ip -brief address`, `lscpu`, `free -m`, `lsblk`, and, after installing an appropriate NVIDIA driver if a GPU is present, `nvidia-smi`. We do not assume that its available `RealMemory` equals the value measured on another compute node.
+
+We add the verified `quasi12` address to `/etc/hosts` on `quasi06`, `quasi07` through `quasi11`, and `quasi12`, and test `getent hosts quasi12` and `getent hosts quasi06` in both directions. We install and enable OpenSSH on the new node as in Core Infrastructure, Section 2, and verify administrator login from `quasi06` before starting any remote setup commands. We check firewall rules for the cluster services used below.
+
+### 2. Connect shared storage and account lookup
+
+We install `nfs-common` and `autofs` on `quasi12`, add the same direct map for `/clusterfs` as on existing compute nodes, restart `autofs`, and check `ls /clusterfs` and `findmnt -T /clusterfs`. We first check whether the **verified** address of `quasi12` falls inside an intended `/etc/exports` range. If it does not, we explicitly authorize the new host or an appropriate narrow network on `quasi06` and apply the change with `sudo exportfs -ra`. We do not widen exports based on the hostname alone.
+
+We install the NIS client packages, set the `quasi` domain, the `quasi06` master, and the existing `/etc/nsswitch.conf` rules, then start the client services. If the new address falls outside the intended `/etc/ypserv.securenets` ranges, we update that restriction and the corresponding firewall policy before testing. We compare `getent passwd <existing-user>` and `id <existing-user>` with the results on `quasi06`, and check that the user's home directory is readable and writable as expected. We do not create a second local account with the same username on `quasi12`.
+
+### 3. Prepare time, service accounts, Munge, and scratch
+
+We configure `chrony` and verify a synchronized clock with `chronyc tracking` and `chronyc sources -v`. We compare the existing `munge` and `slurm` UIDs and GIDs on `quasi06` with those on `quasi12` **before** creating or accepting package-provided accounts. We install Munge and securely copy the **existing** `/etc/munge/munge.key` from `quasi06`; we do not generate a new cluster key. We check file ownership and permissions, restart Munge, and test `munge -n | ssh quasi12 unmunge` from `quasi06`.
+
+We prepare `/scratch` on the local disk using the root ownership and permissions specified in Clustering Setup, Section 1. We verify that it is not accidentally on NFS and that it has sufficient free space. Slurm's prolog will later create each user's per-job subdirectory.
+
+### 4. Register and test the node in Slurm
+
+We install a compatible `slurmd` and `slurm-client` package version and `rsync` on `quasi12`, mount the shared `/clusterfs/config/slurm` directory, and link `slurm.conf` and `cgroup.conf` as in Clustering Setup, Section 4. We run `/usr/sbin/slurmd -C` on **quasi12 itself** and use its reported CPU topology and usable memory for a new `NodeName=quasi12` entry in the shared `slurm.conf`. We do not duplicate the `quasi07` memory value without checking it.
+
+For initial Slurm testing, we put `quasi12` in a temporary partition limited to our administrator test accounts and keep it out of `qdisk`. We validate the group and partition configuration for our installation, run `sudo scontrol reconfigure` on `quasi06`, and start `slurmd` on `quasi12`. We check `scontrol show node quasi12`, `sinfo -N -l`, and the relevant service journals. Slurm documents the configuration reread performed by [`scontrol reconfigure`](https://slurm.schedmd.com/scontrol.html); settings that require a restart are handled during maintenance.
+
+We submit small single-node batch jobs through the test partition, first to print the hostname and environment, then to create a file under the job's `SLURM_TMPDIR`. We verify the prolog's directory ownership, the epilog's successful copy to `out-<jobid>/quasi12/`, and cleanup. If a job fails or the node enters `DOWN` or `DRAIN`, we inspect and resolve the cause before offering it for general use.
+
+### 5. Check software and join production scheduling
+
+We install the same compatible OpenMPI runtime and numerical runtime libraries used by the current compute nodes. We check that `/clusterfs/opt/qupy/bin/python` can import the documented packages on `quasi12`; a failure may indicate a Python version or system-library mismatch even though the virtual environment is visible through NFS. We distribute the tested Quantum ESPRESSO installation to local `/opt/QE`, check its binary dependencies and version, and run a small calculation. We also test an MPI job between `quasi12` and an existing compute node using a shared working directory and appropriate I/O settings.
+
+Only after those tests pass do we add `quasi12` to the production `qdisk` partition, remove its temporary test partition, reconfigure Slurm, and verify that an ordinary user's job can be scheduled there. For example, the existing node expression `quasi[07-11]` can become `quasi[07-12]` **after** the node is ready. We update every explicit hostname list, including `/etc/hosts` on all machines, both compute-status loops in `/clusterfs/skel/bashquasi`, and the `NODES` array in `/clusterfs/skel/update_qe.sh`; we also check backups and monitoring for node lists maintained outside this guide.
+
+The GPU shown in our compute-node inventory does not automatically become a Slurm GPU resource on `quasi12`. If we decide to schedule GPUs, we separately configure and verify Slurm `GresTypes`, the node's `Gres` declaration, and its `gres.conf` and driver setup for the appropriate nodes, following the [Slurm GRES guide](https://slurm.schedmd.com/gres.html).
