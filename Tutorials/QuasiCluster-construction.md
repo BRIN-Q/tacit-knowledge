@@ -9,7 +9,7 @@ Our hardware inventory, based on `neofetch`/`fastfetch` output from `quasi06` an
 
 | Role | Node(s) | System | Processor | Memory | Graphics hardware |
 | --- | --- | --- | --- | ---: | --- |
-| Login | `quasi06` | MSI MS-7D41; Debian GNU/Linux 13 (trixie) | Intel Core i9-13900K; 4 logical CPUs | 64,088 MiB | Intel UHD Graphics 770 |
+| Login | `quasi06` | MSI MS-7D41; Debian GNU/Linux 13 (trixie) | Intel Core i9-13900K; 32 logical CPUs | 64,088 MiB | Intel UHD Graphics 770 |
 | Compute | `quasi07` to `quasi11` | Lenovo ThinkStation P358 Tower; Debian GNU/Linux 13 (trixie) | AMD Ryzen 9 PRO 5945; 24 logical CPUs per node | 128,701 MiB on `quasi07` | NVIDIA GeForce RTX 3080 Lite Hash Rate per node |
 
 The memory figure in the compute row is measured on `quasi07`. Our current Slurm example records `RealMemory=128701` for `quasi07` to `quasi09` and `128669` for `quasi10` and `quasi11`. These are usable-memory settings, so we do not copy one value to a future node without measuring it. Although GPUs are physically present, our present `slurm.conf` does not declare them as schedulable GPU resources. GPU scheduling would require separate Slurm GRES configuration and checks; the [Slurm GRES guide](https://slurm.schedmd.com/gres.html) describes those settings.

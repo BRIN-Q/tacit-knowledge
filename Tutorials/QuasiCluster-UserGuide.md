@@ -12,7 +12,7 @@ A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @
 
 # Brief Introduction
 
-QuasiCluster is our "in-house" **MINI** high-performance computing (HPC) environment running on Debian Linux. This cluster is designed to accelerate computational physics simulations, quantum modeling, and medium-level data analysis, which are too heavy for personal computers but still do not yet need "real" BRIN HPC system. Our architecture is divided into two primary components to ensure stability and efficiency. The main access point is the login node, `quasi06`, which is equipped with 4 CPU cores. We use this node strictly for managing files, compiling code, preparing input scripts, and submitting jobs. The actual heavy computing is handled by our five compute nodes, designated `quasi07` through `quasi11`. Each compute node is powered by 12 physical (double-threaded) cores and is securely managed by the Slurm workload manager to guarantee peak performance and prevent resource collisions among the users.
+QuasiCluster is our "in-house" **MINI** high-performance computing (HPC) environment running on Debian Linux. This cluster is designed to accelerate computational physics simulations, quantum modeling, and medium-level data analysis, which are too heavy for personal computers but still do not yet need "real" BRIN HPC system. Our architecture is divided into two primary components to ensure stability and efficiency. The main access point is the login node, `quasi06`, which is equipped with 32 CPU cores. We use this node strictly for managing files, compiling code, preparing input scripts, and submitting jobs. The actual heavy computing is handled by our five compute nodes, designated `quasi07` through `quasi11`. Each compute node is powered by 12 physical (double-threaded) cores and is securely managed by the Slurm workload manager to guarantee peak performance and prevent resource collisions among the users.
 
 All nodes are interconnected through a shared storage system located at `/clusterfs`. This infrastructure ensures that our project files, optimized Python environments, and shared data repositories (such as Quantum ESPRESSO pseudopotentials) are universally accessible regardless of which node executes our jobs. Slurm dynamically tracks memory usage and core allocations across the network, allowing multiple users to safely share the compute nodes without interfering with each other's calculations.
 
@@ -40,7 +40,7 @@ Home Directory (/clusterfs/...): ...
 === Compute Resource Status ===
 /clusterfs: 1,4T Used / 3,6T Total
 Load Averages:
-  quasi06: 1.00 / 4 CPUs
+  quasi06: 1.00 / 32 CPUs
   quasi07: down
   quasi08: down
   quasi09: down
