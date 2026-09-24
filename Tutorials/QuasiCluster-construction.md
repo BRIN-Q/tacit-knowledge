@@ -1,7 +1,7 @@
 # QuasiCluster Setup Guide
 
 Tutorial writer:<br />
-A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @ https://quantumresearch.id)
+A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @ [quantumresearch.id](https://quantumresearch.id))
 
 This document is our reference manual and teaching note for current and future QuasiCluster administrators. We will describe how our login node (`quasi06`) and five compute nodes (`quasi07` to `quasi11`) are configured. We assume that Debian is already installed on every node and that administrators have `sudo` access. We use Slurm to schedule work, Munge for Slurm authentication, OpenMPI for parallel jobs, and scientific applications such as Quantum ESPRESSO.
 
