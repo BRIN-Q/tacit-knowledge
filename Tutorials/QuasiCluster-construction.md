@@ -3,7 +3,7 @@
 Tutorial writer:<br />
 A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @ https://quantumresearch.id)
 
-This document is our reference manual and teaching note for current and future QuasiCluster administrators. We describe our login node (`quasi06`) and five compute nodes (`quasi07` to `quasi11`). We assume that Debian is already installed on every node and that administrators have `sudo` access. We use Slurm to schedule work, Munge for Slurm authentication, OpenMPI for parallel jobs, and scientific applications such as Quantum ESPRESSO.
+This document is our reference manual and teaching note for current and future QuasiCluster administrators. We will describe how our login node (`quasi06`) and five compute nodes (`quasi07` to `quasi11`) are configured. We assume that Debian is already installed on every node and that administrators have `sudo` access. We use Slurm to schedule work, Munge for Slurm authentication, OpenMPI for parallel jobs, and scientific applications such as Quantum ESPRESSO.
 
 Our hardware inventory, based on `neofetch`/`fastfetch` output from `quasi06` and representative compute node `quasi07`, is summarized below. The five compute nodes are basically of the same model and general configuration. However, it is better that we still measure each node's usable memory and CPU layout before adding it to Slurm.
 
