@@ -455,7 +455,7 @@ To begin, we need to create five specific Quantum ESPRESSO input files in our pr
 In the `&CONTROL` section of all our input files, there are two important settings to observe:
 
 * **Shared Pseudopotentials:** We use `pseudo_dir = '/clusterfs/repo/pseudo/'`. Instead of downloading pseudopotentials for every project, we rely on this shared repository maintained on our cluster. It saves space and ensures we all use consistent, high-quality atomic data.
-* **Omitting `outdir`:** We deliberately omit the standard `outdir` parameter. By omitting it, Quantum ESPRESSO defaults to generating the temporary `.save` folder and the `.xml` output data directly inside our current submission directory (usually as `./si.save`). This keeps our project folder self-contained and prevents users from accidentally overwriting each other's files in the `/tmp` directory. 
+* **Omitting `outdir`:** We deliberately omit the standard `outdir` parameter. By omitting it, Quantum ESPRESSO defaults to generating the temporary `.save` folder and the `.xml` output data directly inside our current submission directory as something like `out-<slurm-job-id>`. 
 
 ### The Input File Contents
 
@@ -649,7 +649,7 @@ Once the workflow finishes, we can visualize our results. Start an interactive J
 
 ### A Note on the Output Directory (`outdir`)
 
-Because we omitted the `outdir` parameter in our Quantum ESPRESSO input files, all outputs are located right where we submitted the script. In the Python code below, look closely at the variable `outdir = './out/'`. If all our resulting files (like `si.xml` inside `si.save`) are in our current working directory, we must change this line in the script to `outdir = './'`. If we manually organized our files into an `out` folder, we leave it as `./out/`.
+Because we omitted the `outdir` parameter in our Quantum ESPRESSO input files, all outputs are located right where we submitted the script as something like `out-<slurm-job-id>`. In the Python code below, look closely at the variable `outdir = './out/'`. If all our resulting files (like `si.xml` inside `si.save`) are in `out-<slurm-job-id>`, we must change that line in the script to `outdir = './out-<slurm-job-id>/'`. If we manually organized our files into an `out` folder, we leave it as `./out/`.
 
 ### The Plotting Script
 
