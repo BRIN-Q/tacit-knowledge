@@ -1,7 +1,7 @@
 # Welcome to QuasiCluster!
 
 Tutorial writer:<br />
-A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @ https://quantumresearch.id)
+A. R. T. Nugraha ([Fisikawan Gendeng](https://instagram.com/fisikawan.gendeng) @ [quantumresearch.id](https://quantumresearch.id))
 
 ## Contents
 1. [Brief Introduction](#brief-introduction)
