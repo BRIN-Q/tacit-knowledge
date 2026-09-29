@@ -793,7 +793,8 @@ NodeName=quasi10 CPUs=24 RealMemory=128669 Sockets=1 CoresPerSocket=12 ThreadsPe
 NodeName=quasi11 CPUs=24 RealMemory=128669 Sockets=1 CoresPerSocket=12 ThreadsPerCore=2 State=UNKNOWN
 
 # PARTITIONS
-PartitionName=qdisk Nodes=quasi[07-11] Default=YES MaxTime=INFINITE State=UP
+# PartitionName=qdisk Nodes=quasi[07-11] Default=YES MaxTime=INFINITE State=UP
+PartitionName=qdisk Nodes=quasi[07-11] Default=YES MaxTime=INFINITE State=UP LLN=YES
 ```
 We keep the example node values only if they match the actual hosts. `CPUs=24` represents 12 physical cores with two hardware threads each; `CR_ONE_TASK_PER_CORE` changes the default task placement, while `DefMemPerCPU=5200` requests memory per allocated CPU. We check how Slurm counts memory and cores on our installed version before accepting these values. We leave some memory for the operating system instead of assigning all physical RAM to jobs. We install `slurmd` (Section 4) before running `slurmd -C` to inspect each node, and compare its output with the configuration:
 ```bash
@@ -804,6 +805,25 @@ done
 ```
 
 The first-run `State=UNKNOWN` is resolved when a healthy `slurmd` registers. The `qdisk` partition permits jobs on five nodes; it does not mean that `/scratch` is a shared disk. We check the cgroup mode used by our Debian release and Slurm version before applying resource limits.
+
+It should also be noted that by default, Slurm employs a packing strategy. It assigns as many jobs as possible to the first available nodes in its configuration list, such as `quasi07` and `quasi08`. Slurm does this to prevent fragmentation, keeping other nodes completely vacant for potential large multi-node job requests. For workloads consisting mostly of single-node Python and Quantum ESPRESSO calculations, this default behavior causes uneven hardware wear and concentrated heat generation.
+
+In the `slurm.conf` above, we already configured Slurm to use a Least Loaded Node (LLN) strategy. This policy evaluates the available resources across the entire cluster and probabilistically assigns new jobs to the node with the most idle CPUs. The important part is the partition parameters in the bottom of the file where the partitions are defined. We appended `LLN=YES` to the end of the target partition line.
+
+Originally it was:
+```ini
+PartitionName=qdisk Nodes=quasi[07-11] Default=YES MaxTime=INFINITE State=UP
+```
+but we changed it to:
+```ini
+PartitionName=qdisk Nodes=quasi[07-11] Default=YES MaxTime=INFINITE State=UP LLN=YES
+```
+
+If later, we want to modify this file, we need not reboot the compute nodes or manually restart the services. Simply execute the reconfiguration command on the master controller (`quasi06`):
+```bash
+sudo scontrol reconfigure
+```
+The main Slurm daemon will immediately re-read the updated configuration file and broadcast the new operational state to all compute daemons. Subsequent job submissions will be automatically distributed to the quietest nodes in the cluster. For now, we should not do the above command yet.
 
 **2. `cgroup.conf`:**
 Create `/clusterfs/config/slurm/cgroup.conf`.
