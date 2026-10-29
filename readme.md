@@ -1,6 +1,6 @@
 # Tacit Knowledge
 
-Repositori dokumentasi pengetahuan teknis pribadi yang mencakup tutorial, catatan pembelajaran mandiri, dan basis pengetahuan instrumen laboratorium.
+Repositori dokumentasi pengetahuan teknis para individu BRIN-Q untuk dibagikan pada personel BRIN-Q lainnya, yang mencakup tutorial, catatan pembelajaran mandiri, dan basis pengetahuan instrumen laboratorium.
 
 ---
 
