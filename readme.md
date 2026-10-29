@@ -8,9 +8,11 @@ Repositori dokumentasi pengetahuan teknis para individu BRIN-Q untuk dibagikan p
 
 Panduan langkah demi langkah untuk setup dan konfigurasi sistem teknis.
 
-1. [Clustering Raspberry Pi 5](Tutorials/raspberry-pi-cluster.md) — Membangun klaster komputasi mini menggunakan Raspberry Pi 5 dengan NFS, NIS, dan SLURM.
-2. [Instalasi Overleaf CE ARM64](Tutorials/instalasi-overleaf-ce-arm64.md) — Memasang Overleaf Community Edition pada perangkat arsitektur ARM64.
-3. [BoltzTraP2 + Quantum ESPRESSO](Tutorials/boltztrap2-thermoelectric.md) — Simulasi sifat termoelektrik menggunakan BoltzTraP2 dengan data Quantum ESPRESSO.
+1. [QuasiCluster Construction Guide](Tutorials/QuasiCluster-construction.md) — Dokumentasi konstruksi QuasiCluster
+2. [QuasiCluster Construction Guide](Tutorials/QuasiCluster-UserGuide.md) — Dokumentasi tata cara penggunaan QuasiCluster
+3. [Clustering Raspberry Pi 5](Tutorials/raspberry-pi-cluster.md) — Membangun klaster komputasi mini menggunakan Raspberry Pi 5 dengan NFS, NIS, dan SLURM.
+4. [Instalasi Overleaf CE ARM64](Tutorials/instalasi-overleaf-ce-arm64.md) — Memasang Overleaf Community Edition pada perangkat arsitektur ARM64.
+5. [BoltzTraP2 + Quantum ESPRESSO](Tutorials/boltztrap2-thermoelectric.md) — Simulasi sifat termoelektrik menggunakan BoltzTraP2 dengan data Quantum ESPRESSO.
 
 ## Pembelajaran
 
